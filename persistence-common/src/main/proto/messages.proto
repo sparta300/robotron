@@ -1,0 +1,13 @@
+package persist;
+
+option java_package = "com.lbg.persist.message";
+option java_outer_classname = "StorageProtos";
+
+message FreeListRuntime
+{
+	required int32 total = 1;
+	required int32 free = 2;
+	required int32 used = 3;
+	
+	repeated bool available = 4;
+}

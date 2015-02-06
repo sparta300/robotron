@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+                           
+	<bean id="searchPath" class="org.hydroid.file.DirectoryList">
+		<constructor-arg>
+		    <util:list value-type="java.lang.String">
+		    	<value>${defaultRepositoryLocation}</value>
+		    </util:list>
+	    </constructor-arg>
+	</bean>
+	
+	<bean id="configuration" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+      		<value>
+         	defaultRepositoryLocation=${repo.runtime}
+         	cacheSize=10
+         	defaultBlockSize=1024
+         	defaultSlotSize=128
+         	defaultSuffix=.store
+         	minimumBlockIncrement=1
+      		</value>
+    	</property>   
+    </bean>
+
+	
+</beans>	                           

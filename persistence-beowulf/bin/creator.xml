@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">                          	
+	
+	<bean id="creatorContext" class="org.hydroid.beowulf.tool.StoreCreatorContext">
+		<constructor-arg index="0" ref="pageDaemon"/>
+		<constructor-arg index="1" ref="repo"/>
+		<constructor-arg index="2" ref="page0"/>
+		<constructor-arg index="3" ref="forge"/>
+		<constructor-arg index="4" ref="locatorFactory"/>	
+		<constructor-arg index="5" value="${defaultBlockSize}"/>	
+		<constructor-arg index="6" value="${defaultSlotSize}"/>		
+			
+	</bean>
+	
+	<bean id="repo" class="org.hydroid.file.RepositoryFile">
+		<constructor-arg index="0" ref="searchPath"/>
+		<constructor-arg index="1" value="${defaultRepositoryName}"/>
+		<constructor-arg index="2" value="${defaultSuffix}"/>
+		<constructor-arg index="3" value="rw"/>
+	</bean>  
+	
+	<bean id="page0" class="org.hydroid.page.PageIdentifier">
+		<constructor-arg index="0" ref="repo"/>
+		<constructor-arg index="1" value="0"/>
+		<constructor-arg index="2" value="${defaultBlockSize}"/>
+	</bean>	
+	
+	<bean id="forge" class="org.hydroid.beowulf.overlay.OverlayFactory">
+		<constructor-arg index="0" value="true"/>
+	</bean>		
+	
+	<bean id="locatorFactory" class="org.hydroid.beowulf.storage.Block56Slot4Subslot4"/>
+			
+</beans>	                           

@@ -1,0 +1,955 @@
+30/06/2006
+Started to get familiar with all of this again.  It was hard to actually find the latest version.  Have returned to look at my build 3
+repository again.  
+
+01/07/2006
+
+Still trying to unravel the mess that I have created putting all these threads in at this stage.
+
+
+The standard way to wire all of this stuff together is as follows:
+
+  PxEnvironment env = new DefaultEnvironment();
+ 
+  PxSecurityManager securityManager = env.createSecurityManager();
+  DefaultSecurityCredentials credentials = (DefaultSecurityCredentials)securityManager.requestAccess();
+  credentials.setUserName(userName);
+  credentials.setPassword(password);
+  
+  PxSecurityPass pass = securityManager.authenticate(credentials);
+  
+  PxRepositoryManager repoman = securityManager.createRepositoryManager(pass);
+  
+  PxRepository repo = repoman.read("exop://machine/store");
+  
+  long nameL = repo.add("David Brown");
+  
+  
+21/07/2006
+Playing with eclipse plug-ins and set up a preferences page for the plug-in for phoenix.  At the moment it only has the most basic 
+information such as the default block and slot size and where to look for repositories.  It does however load default values
+from a preferences.ini file.
+
+22/07/2006
+Realised that a lot of the problems with trying to undo this mess stem from the RepositoryManager itself, since it is designed as
+an EventProcessor and is supposed to run within its own thread.  You can configure the RepositoryManager so that it does not run
+in its own thread but it will still try to block on the event processor's queue.
+
+Since RepositoryManager is a specialisation of event processor, there isn't any way to introduce an intermediate abstract repository
+manager class that contains behaviour common to both the current repository manager as it stands and the single-threaded non-blocking
+one I want to introduce.  So the first step is to move out as much of the repository manager functionality as I can into another
+class that can be shared.  I moved all the code that handles creating RepositoryCreators and RepositoryEngines into a new factory
+class called RepositoryObjectFactory for want of a better name.  Now I have to decide the fate of the RepositoryManager.
+
+The main thing is that the RepositoryManager isn't really a direct analogue of any client-side interface.  It is a bit like
+PxRepositoryManager but not completely.  I renamed RepositoryServerApi to RepositoryApi so that it is more obvious that it is the 
+server-side equivalent of the client interface PxRepository.  The implementor of this interface is DefaultRepositoryServer, which
+is created when you call DefaultEngine.createApi(transactionId).  This is another class where there is an object lock in place.
+Basically all calls on the API will wait on the lock object in DefaultRepositoryServer until notifyComplete() or notifyException()
+are called.
+
+I have just realised that the Ipswich implementation looks a lot more like what I want than the phoenix one.  There we have 
+server-side equivalents of all the client classes and no threads at all.  I should copy that implementation and just add back in
+the changes for using a real store file.
+
+	PxEnvironment			DefaultEnvironment
+	PxSecurityManager		DefaultSecurityManager
+	PxTransaction			DefaultTransaction
+	PxRepositoryManager		DefaultRepositoryManager
+	PxRepository			DefaultRepository
+	
+So, decided to make a clean break and created a new project called exosphere which will contain the new build 5 repository.
+The rest of this progress now only occurs here.
+
+I copied in most of the default classes from the ipswich implementation and all I have to do now is replace the ipswich engine
+with the guts of the phoenix engine.  I am hoping to get rid of the RepositoryManager class altogether.  For the time being I have
+rewritten DefaultEnvironment so that it reads the exosphere.properties file now that the RepositoryManager has gone.  I have
+also changed the DefaultSecurityManager so that it loads up the user names and passwords from the properties file instead of
+having them hard-wired in. Copied over the TestPxSecurityManager test case.
+
+One casualty that I removed from my copy of the Ipswich stuff was a DefaultFactory and its client side interface PxRepositoryFactory.
+I don't know why that was created - the repository manager interface should be able to create repositories for us.
+
+Started hacking into the DefaultRepositoryManager, making it capable of decoding repository urls of the following form:
+
+	exop://themediafactory.net/path/to/store?b=1024&s=128
+	
+I added a DefaultRepositoryManager which tests the method that does the decode (decodeCreateUrl()) and got that working, albeit without
+much error handling at the moment.  I will also need a decodeUrl() to use with read, update and remove.
+
+23/07/2006
+Okay, I think I made really good progress last night.  I think I am going to refactor all that URL stuff because I am sure that there
+are URL classes that can handle most of that stuff.  I ended up creating two classes in common that use java.net.URL at the core.
+One is called UniformResourceLocator and the other is an interface called UniformResourceLocatorValidator.  Basically you can pass
+a validator into the constructor for UniformResourceLocator.  If you do so, then the validate() method will be called on the validator
+during construction.  The idea here is that UniformResourceLocator will use the URL class to make sure that URL is in the right 
+syntactic format but the validator will do a semantic check.
+
+At this point in time the DefaultEngine, DefaultRepository and DefaultRepositoryManager classes are still broken.  Just fixed 
+DefaultRepositoryManager but it is going to have a knock-on effect because I have switched it over to using the newer Configuration
+class.  However, all the other classes are passing in an old configuration, so I will have to go back to the source of the problem,
+which is in DefaultEnvironment.  Okay, sorted that problem out I think.  I needed to add another constructor to PropertyLoader that
+loads from the classpath, which I copied from the PropertyFileLoader directly.
+
+After all that the bastard URL class is spitting out my 'exop' protocol.  Shit and I deleted the one I had painstakingly put together
+last night that would have done the trick!  No, just remembered I can get it from local history, so have recovered it okay.  Right
+got that sorted now.
+
+Monday 24/07/2006
+-----------------
+I am trying to work out how the remaining broken classes should hold together.  It basically looks like the DefaultRepositoryManager
+is creating the DefaultEngines, using those engines to create the RepositoryApi.  It then passes the API into the DefaultRepository,
+which currently directly implements the PxRepository interface.
+
+I changed DefaultRepository so that the engine is no longer passes in. It looks like only the API is needed at the moment.
+
+There may be more to do in terms of cleaning up but I will revisit that
+once I can debug it.  Okay DefaultRepository now builds.  Just the DefaultEngine needs to be sorted out now and that is only
+wrong because it still thinks it is talking to an ipswich repository.  Both flush() and the two initiate() methods need to be fixed.
+
+Okay, sorted out most of the problems with the initiate(FileChannel,FileMode,Configuration) method.  There is also an initiate() method
+which is called from within the engage() method.  Of course, engage() is called from within the open() method in the 
+DefaultRepositoryManager.
+
+Anyway, slowly had to drag in all the other classes from the phoenix build and give them the right package names.
+
+The initiate() methods are now both compiling but my current dilemma is that flush() method which didn't actually exist on the
+phoenix build.  Maybe it just wasn't a problem because it was all memory mapped.  I am going to delete it all for now.  Currently the
+way close works is as follows:
+
+	DefaultRepository.close()
+	-> DefaultEngine.close()
+	   -> CleanUp.close == DefaultRepositoryManager.close()
+	   
+In other words, it is the repository manager that knows how to close the random access file, but instead of coupling itself to all
+the other objects, the only interface it exposes is that close() method.
+
+Okay my default engine now compiles.  The only problems left are ExistingSpaceManager and AsynchronousExistingSpaceManager which are
+complaining about not having access to notifyException() and notifyComplete() methods on the DefaultRepository which I deleted from
+that class in order to make it single threaded.  So all I need to work out is how requests are going to go down the chain.  At the
+moment the call tree looks like this:
+
+  FindSpace.accept()
+  -> FreeSpaceManager.accept()
+     -> SpaceRequest.notifyResponse()
+	    -> SpaceRequestManager.notfiyResponse() == ExistingSpaceManager.notifyResponse()
+	       -> DefaultRepositoryServer.notifyException()
+	          or
+	          DefaultRepositoryServer.notifyComplete()
+
+At the moment FindSpace is a wafer thin layer above the FreeSpaceManager - it adds absolutely nothing and delegates straight through.
+The free space manager then tries to see if it can satisfy the space request.  If it can, it calls respond() which calls respond()
+on the space request, once per slot.  Then it calls notifyResponse() on the space request.
+If it cannot even partially satisfy the request, then it simply calls SpaceRequest.notifyRespond() without any previous calls to 
+SpaceRequest.respond().
+
+The last phoenix implementation was just trying to get an ExistingSpaceManager working.  Basically only one strategy is
+registered with the space manager - FindSpace.  Basically the only way FindSpace knows how to obtain any space is to get it from
+the FreeSpaceManager.  The free space manager can only find out about free space if it is notified - it doesn't go trawling through
+the store trying to find it.  Basically, when a block is loaded, it should notify the free space manager.  Currently this is only
+done in one place - when the root block is loaded, according to the following sequence.
+
+	BlockLoader.loadRoot()
+      ->SpaceManagementMediator.notifyLoad()
+        -> FreeSpaceManager.notifyLoad()
+
+Basically, I thought the main strategies for obtaining space were:
+
+	(1) recover space from deleted objects that have not been garbage collected
+	(2) create space in new blocks
+	(3) find space already in the store (probably fragmented)
+	(4) converting multiple slots into overflow blocks
+	
+Looking at all of this again, it seems like the chain of reponsibility could be a relevant pattern.  I mean that the way the space
+request can be satisfied in various different ways and should be passed on down the chain by space managers that cannot deal with
+it.
+
+Anyway I have only tried to implement (3) and, as I said earlier this is done via notification of block loading rather than trawling.
+A better approach may be for the free space manager to maintain some kind of persistent record of where the space is, or blocks
+could have a very high level flag telling you whether they have any space or not, so that you can quickly spin through them without
+having to read the indexes.
+
+Basically a space request manager has a number of space request strategies.  The only one we have is ExistingSpaceManager, which is
+a subclass of AbstractSpaceRequestManager which implements the SpaceRequestManager interface.  It is the default engine that first
+constructs the space request manager and then loads the space management strategies.  Currently the only space request
+manager configured is ExistingSpaceManager.
+
+Space request strategies just have an initiate() method and the accept() method inherited from the SpaceRequestAcceptor interface.
+
+Tuesday 25/07/2006
+------------------
+Okay, first things first - I am going to chop out the calls to notifyComplete() and notifyException() and let the chips fall where 
+they may.  I had to hack out quite a few classes but now I have a clean build - though not one that probably works at the moment.
+
+Okay added a few more units tests to test decodeCreateUrl.
+
+Noticed that the ExosphereRepositoryCreator isn't right - this is building an ipswich store at the moment.  So copied the phoenix
+repository creator and did the same deal with the package name etc.  The main difference was that I had to rename DefaultConfiguration
+to ExosphereConfiguration.  My first task was to set up a unit test to test the create() method on the DefaultRepositoryManager.
+This seemed to go really well up to the point where I was going to create the file and it blew up because the default repository
+path was not being picked up from the config properly.  This suggests that configure() is not being called on the repository
+object factory, which is the object responsible for creating repository engines.  Yes, sure enough its configure() method is not
+being called.  Actually, strike that, it doesn't look like the ObjectRepositoryFactory is even being used.  I have changed the
+DefaultRepositoryManager so that it configures the creator.
+
+Fantastic - just stepped through that and it flawlessly created my first exosphere store at 10:51pm.  Actually, looking at the code,
+I thought the file wasn't ever closed properly but then I saw that NioHelper closes the files immediately after creating it.
+
+There is a problem in the repository manager where it only keeps one random access
+file instead of one per open store.  Hmmm, instead of creating an array list to hold the engine reference in and passing that around,
+I have now created a separate EngineHolder class.  This gives us the one random access file per repository that we want.  The only
+thing that slightly mystifies me at the moment is why I keep a map of store urls to APIs.  I don't check that map at any time at
+the moment, I just put things into it.
+
+The other problem with this is the CleanUp and how that is wired back to the repository manager.  I have just changed the implementation
+of close() so that it closes all the open store files, which seems the sensible thing to do.  However, this means that when any
+repository calls close, it will end up closing all repositories associated with the same manager - not really what we want.  So we
+need some mechanism for the engine to call back and tell the manager that it should just release resources for that particular engine
+only.  So I changed the CleanUp interface so that the close() now takes a repository engine as an argument.  The manager then uses
+that to look up the engine and close the random access file.  I added a cleanUp() method to EngineHolder to do that.
+
+Okay starting doing a happy day read unit test.  There were a few glitches along the way - for some reason the dynamic path
+of the space manager class name was null - probably happened when I moved that code out to the RepositoryObjectFactory.  At the
+moment I have realised that some more of this stuff was geared up for ipswich still, with the DefaultRepositoryServer still using
+the tree map that was the store for ipswich.  It looks like I had implemented every single method for the ipswich store, which is
+interesting.  I should really start using that store for application development to see whether my interface is as nice as I want
+it to be.
+
+So anyway I copied in the DefaultRepositoryServer from the phoenix implementation.  This only has the add() command wired through
+but putting all of that in was enough for me to successfully read back a store that I had created.  For some reason file.delete()
+does not work in my unit test but otherwise got my happy day read test working at 1:45am.
+
+Lastly renamed close() to shutDown() on the manager and made sure that when DefaultRepositoryManager.close(RepositoryEngine) is 
+called from DefaultRepository.close() that the engine is freed up and removed from the look-up table.  Okay, I'm going to call it
+a day now that I have that working.  The next project is to get the DefaultRepositoryManager.update() working.  This should allow
+us to add an object into the store when it is complete.
+
+
+Wednesday 26/07/2006
+--------------------
+Renamed DefaultRepositoryManager.close() to closeAll() to more closely refect what it is actually doing.
+
+Got the test on DefaultRepositoryManager.update() working with no problems but haven't tried to add an object yet.
+
+Realised that remove() needs to change to use the new UniformResourceLocator.  I created a private decodeUrl() method that could
+be shared by read(), update() and remove().  I need to find the code done elsewhere that converts the url into an absolute path.
+Actually it was right under my nose DefaultRepositoryManager.getDataFilePath().  Okay, with that in place, I added a happy day
+test for remove() and that worked fine - even the delete of the file worked this time.
+
+Decided to add a little loop that would keep trying to rename the file, for a number of configurable retries.  This actually
+took me a lot longer to get working than it should have but I think it is quite cool functionality.
+
+Right, now I think I should try and dig out the unit test stuff I had that automatically created serialised objects to store
+in the repository.  Yeah a lot of it seems to have been in UnitTestBase for phoenix.  Looking at that code there is a lot of
+common stuff that I already have elsewhere.
+
+Created a UnitTestBase class for exosphere using a JUnit 4 version, putting the logger and configuration set up in setUpBeforeClass().
+
+I just had a thought that I could add further useful operations to the repository manager.  For example you could merge two repositories
+together and other such operations.  Of course, these would only work properly if the stores had a directory tree that addressed everything.
+You could not compare them otherwise because all the locators would be different.  Consider these:
+	
+	EvaluationEngine
+
+	Object evaluate(String expression)
+	
+
+	
+	
+	push(referenceUrl, updatableUrl)			pushes changes from the first repository to the second
+	pull(referenceUrl, updatableUrl)			pulls changes from the first repository down to the second
+	synchronise(referenceUrl, updatableUrl)	    compare the two repositories and put any more up to date elements 
+	                                            from the first into the second
+	merge(ref1, ref2, updateableUrl)            merge in the changes from the repos 1 and 2 into the updatable repo
+
+Anyway, back to the task at hand - to add an object into the store.  I decided to implement a chain of reponsibility instead of
+the spidery mess I had before.  So all incoming requests to the DefaultRepositoryServer are now passed off to the ResponsibilityChain
+class, which knows about the head handler in the chain.  From there on, all the other handlers will pass on any requests they can't deal
+with to their successor down the chain.
+
+I removed SpaceRequestManager from SpaceRequest - it wasn't using it for anything anyway.  The SpaceRequest class needs to know about
+the Sizing class to do the calculations, so I get the DefaultEngine to pass that in.  I deleted all of the AbstractSpaceRequestManager
+kind of classes, as well as SpaceRequestAcceptor.
+
+Ripped out all the space management strategy set up in DefaultEngine.initiate().
+
+Created a new ExistingSpaceHandler which is currently the only handler in the chain.  I copied most of the code in from FreeSpaceManager.
+The problem is that the handler does not get notified of any block loads.  Managed to sort that out okay by replacing all references to
+the free space manager in the mediator to my new handler.
+
+Once all that was wired in the chain correctly serviced the space request and popped out the end of the handleRequest() method, so all
+I had to figure out at that point was how to write something.  I created a SpaceRequestWriter to do this but it only has one method at
+the moment.  I think I have done the write thing but failed at the last hurdle, getting an exception because it claims my slot buffer
+is a read-only buffer.  I posted a bug report off to sun and see what they come back with.
+
+
+Saturday 29th July 2006
+-----------------------
+Well I feel a bit daft now that I found out that the read only buffer problem was my own fault.  There was a bug in DefaultEngine
+that was hardcoding the mode to read-only instead of using the mode that was passed in.  As soon as I changed that, it all worked - well
+at least for an object that fits inside a slot.  I discovered this after reading the source code and realising that the implementation
+class was hardcoded to return false when you call isReadOnly().
+
+Okay, I think the immediate problem with it is that we are not updating the Index associated with this object.  In fact, the space request
+doesn't even contain any references to anything regarding any of the repository control data at all.  Also, in order to implement
+the store() method, I will also need to create a proper locator that can be properly resolved to the right block and slot.
+
+This basically means that my whole notification process isn't that great to begin with.
+
+I have started to think about locators again.  In my notes in the red book, I basically came to the conclusion that the most rudimentary
+locator structure would be
+
+[ ][ ][ ][ ][ ][ ][ ][ ]
+ 7  6  5  4  3  2  1  0
+ 
+ byte 0    : slot index as unsigned byte giving maximum of 256 addressable slots
+ bytes 1-7 : block index
+ 
+Within the repository slot IDs are ints and block IDs are longs.
+
+However, the above structure doesn't give support for what I termed native types, which are hard slot formats that are used for
+particular purposes.  I thought that the quickest way to implement a list, for example, would be as a native type within the store, so
+that you didn't need to work with objects when you are manipulating them.  I could also implement trees that way.  I wanted to do this
+because I didn't really like the way you had to work with these intermediary objects, which all ended up doing calls on the server-side
+equivalent of the PxRepository interface - RepositoryApi.
+
+To allow addressable sub-slots, we could nibble off another byte to give 256 addressable subslots.  To keep the locator looking like a
+small number in the majority of cases, it would then be ordered
+
+ byte 0    : slot index as unsigned byte giving maximum of 256 addressable slots
+ bytes 1-6 : block index
+ byte 7    : sub-slot index
+
+Okay, not being very productive here - just went looking at the Columba POP3 mail interface because my ideal first use of a working
+store would be to store all my mail in a nice, portable format.  Anyway, that is all a long way off unless I sort out my act and get
+the damn thing working.
+
+There are two things that I really need.  One is a quick way of building an application that can use the ipswich store, so I can
+work out whether my interface is actually any good for building a proper application.  This will also give me a performance
+baseline to beat.  I was hoping that eclipse was going to be the way to do that but it really isn't any easy ride at all.
+
+The other thing I really need to work on is all the stuff that sits on top of the repository - such as PxObject and PxClass and
+all that support of class evolution.  That will make demands on the store that don't currently exist.  I have a long way to go
+but I think I am making some decent progress for once.
+
+I think I may need to go back to the idea of having repository agents that can all deal with the repository in different ways.  I
+need to be careful with the cache and make sure that all of that is rock solid.  At the moment I am not even sure that I can
+address an entire store because of the way the mapped byte buffer works but we will see once I get a little further.
+
+Let's set some targets:
+
+	(1) write a reader that can browse the repository so we can see what is actually in it
+	(2) implement a Locator class that decodes a locator into block ID, slot ID and sub-slot ID.	
+	(3) make sure that the locator is written into the index when we add an object and that all the control data is kept up to date
+
+In order to make sure that everything is written okay, I have ended up adding more information into FreeSlot - namely the block
+and the block control data of the free slot.  This is probably not really practical for the future because keeping these
+references could make things messy when blocks are being evicted from the cache.  I would probably need some way to pin blocks
+in the cache while you are updating them and have some kind of status flag on the index which you only update once every fragment
+has been successfully written out.
+
+Part (1) was quite easily achieved by adding a new class called RepositoryReader.  I had to add quite a few extra getters all over the
+place so that I could actually read things out.
+
+After a little messing about, I got that a lot closer to working.  I have created a new IndexMask class which does a lot
+of the bit munging.  At the moment the main bits to worry about are all the ones related to fragmentation of objects.  I got that
+working perfectly - I tested it with one, two and three slots.  I am also writing in the right totalRawSize and totalStoredSize
+values.  What's missing at the moment is populating the locator and the nextLocator part of the index.  So as far as my targets
+are concerned, I think I have pretty much done 1 and 3 and only really have to do 2 to be able to implement quite a lot more
+repository methods.  Once I have locators, I can implement store() easily enough and then all the methods that require a look-up
+of a locator - duplicate/copy and remove/fetch - should drop out pretty easily.  Substitute() and replace() are more difficult
+because I have to get the whole redirection thing working.
+
+I was also thinking that we could implement remove, fetch, substitute and replace so that they did logical deletions rather
+than real ones.  This would allow you to undo things to a certain level.  Maybe I should build undos into the store in a more
+fundamental way.  Maybe I could implement an auditing version of the store so that every change to an object is recorded.
+It looks like I might need some kind of way of specifying capabilities, so I could add a capability string to the URL for
+a create so it looked something like this:
+
+	PxRepository repo = repoman.create("exop://localhost/new?b=1024&s=128&c=zip,audit");
+	
+Anyway it is 4:21am and I should really go to bed
+	
+		
+Monday 07/08/2006
+-----------------
+Last time I rediscovered a Locator class that I had worked on one day when I was bored at Atos which satisfied part (2) of the entry for
+29th July.  I just didn't write about it.
+
+Updated SpaceRequestWriter so that it also writes in the locator.    This basically did the job but only needed a few changes.  One that
+I have to make today was a toLong() signature that returned the actual encoded value as a primitive long.  I also updated the loop so that 
+the locator and the next locator were both written by the space request writer.
+
+Okay, that seemed to go swimmingly.  Added a setter for the locator on SpaceRequest for the writer to set, and then implementing the
+store() method was suddenly very easy.  Added tests requiring up to four slots to DefaultRepositoryTest.  When you put in a request for
+five slots, it blows up with OutOfSpace as expected because there is no successor handler to deal with the remaining slot.
+
+I was just thinking about my idea of using different models.  I think we would have something like a StorageModelFactory with
+signatures like the following:
+
+	PxList createList
+	PxMap createMap
+	PxTree createTree
+	PxTimeLine createTimeLine
+	PxRelationalSchema createRelationalSchema
+	PxSourceRepository createSourceRepository
+	PxClass createClass
+	
+I think there are two possible ways that I can continue now.  Either I (1) start implementing as many methods as I can using the
+existing space handler or (2) introduce a new space handler that creates space.
+
+Once I have a handler that creates space, I will have a working store to all intents and purposes, that can keep filling up without
+ever really being tidied up.  That shouldn't be too difficult to set up - it will be a variation on the repository creator but
+should be simpler because all the sizing information is already known.
+
+Friday 25/08/2006
+-----------------
+
+Decided to have a crack at implementing copy().  I renamed SpaceRequestWriter to ScatteringWriter and created a gathering reader.
+Created a Slot class, which is simply a bucket containing the block the slot belongs to, the index and the actual slot byte
+buffer itself.  Realised that my cache wasn't very good - it didn't check to see if blocks are already loaded and didn't record
+the block Id for each cache entry.  I created a new BlockCacheEntry as a subclass of CacheEntry to hold the block ID.  Added a
+BlockCache.getIndex(blockId) signature to return the index of the block in the cache or NONE if it isn't in the cache.  I also
+now actually write the block into the cache entry.  Also added a toString() method to BlockCache so I can see what's going on.
+Managed to get the copy working if the serialised object is smaller than a slot but when spread over two slots it didn't work.
+
+Saturday 26/08/2006
+-------------------
+
+First managed to fix it for 2 slots but it blew up for three.  It was all down to a couple of problems - the main one being that
+the individual buffers weren't prepared for reading.  The other problem was a bug where I was actually always getting the second
+slot - I was always doing the next on the head slot rather than the current slot.  This was making it spin past the end.  Once I
+spotted that it worked perfectly, so that was a pretty good step forward.  I can get objects in and out of the repository.  I
+think the next step is to allow the repository to grow - i.e. by creating new space and making it available.  That will mean
+that the repository can grow to any size.
+
+One thing I noticed that might be a good idea is to keep a slot count in the Index.  We may need this for large objects that
+we don't want to reconstitute in memory all at the same time, to help us to prepare some chunks of memory to put the pieces in
+before passing it all back over the wire to the client.
+
+Saturday 02/09/2006
+-------------------
+I really need to invent a term for an object that has been scatter-written i.e. something like jigsaw - a thing that has been
+broken into pieces but which can be put back together again.
+
+Another thing I was thinking of again is that the repository could be used as a kind of jar file, except that you can replace individual
+files within it.  It would also keep a history of each individual file so that you can revert to earlier versions.
+
+Started thinking about implementing some more repository methods and the one that came to mind was duplicate().  This is a weird one
+because it is paired with copy() but is really more like an add().  This is not a round-trip version, so we cannot bring back
+the locator of the new stored object.  The immediate conclusion is that the only way to get the duplicate would be via a search by
+class and there would be no way of knowing which object had actually been duplicated.  The only way to make this useful is to put in
+the relationship between the original and the duplicate.  The most useful implementation would be to have the duplicate to be the
+predecessor of the original.  This means that if the original is later updated, this will be the most accurate reflection of reality.
+Of course, there is no way to directly update the other object.  The downside is that using this approach works contrary to using 
+duplicate() as a GoF prototype.
+
+Maybe we need some more generalised way to relate objects together.  I could add things like predecessorLocator and successorLocator
+to Index but this takes up space for all object when perhaps only a few objects in the store actually has any relation to each other.
+I also need to add in support for shadow objects - maybe that is just another kind of relation.  Maybe the answer is to have some
+general space in the Index which can be looked at in lots of different ways depending upon how the actual slot is being used.  Or
+you could have a locator that points to a native slot that contains information about relationships.
+
+We currently have a redirectLocator which I knew would be required for historical reasons to support replace().  With replace(), we
+are explicitly creating a new version of the object but want to keep the existing locator.  Basically, you could clobber the object
+directly and, as long as it is the same size, there is no immediate problem with this.  However, As soon as you want to keep the 
+original object data or the serialisation is bigger and requires more space, then you have two options.  You can either :
+
+	(1) find extra slots somewhere else in the store, potentially producing more exacerbated inter-fragment separation or
+	(2) allocate the slots somewhere else and use a redirect to the new head slot.  The current slots are then marked for deletion
+	
+In fact, duplicate() could use the redirectLocator as a pointer to the duplicate serialised object.  This could mean that we could
+support the behaviour we want without changes to the Index format - we would just need to use bits in the index mask to tell us
+how to interpret the redirect.  Shadow objects could be located in this way too.
+
+The other method that would be useful would be to call revert(locator), which would only work on duplicated objects.  This should
+have the effect of making the locator point to the duplicate again.  The changed object that you don't want to be saved would then
+be marked as deleted.
+
+One approach would be (L is the locator, o is original, d is duplicate)
+
+	L  ------|---->[o]			// L points at the original object
+	
+	duplicate(L)
+	
+	L  ------|---->[o]-->[d]	// o points to the duplicate d via redirectLocator.
+	
+	replace(L, d')		// replacement clobbers d
+	
+	L  ------|---->[o]-->[d']
+	
+	revert(L)
+	
+	L  ------|---->[o]   [d']	// redirect to d' is broken and d becomes eligible for reclamation
+	
+This approach favours the scenario when you are likely to revert() and are not planning on making many changes to the object.
+Bear in mind that each change requires a redirect, which is an extra block read.
+
+The other approach is:
+	
+	L  ------|---->[o]			// L points at the original object
+	
+	duplicate(L)
+	
+	L  ------|---->[d]-->[o]	// d points to the duplicate o via redirectLocator.	
+	
+	replace(L, d')		// replacement clobbers d
+
+    L  ------|---->[d']-->[o]
+
+	revert(L)
+	
+	L  ------|---R [d'] +-->[o] // redirect to o introduced, the hidden object is eligible for reclamation
+                 |      |
+                 +------+
+
+This approach favours the scenario where a revert() is unlikely and lots of changes to the object are expected.  To be honest, this
+is probably the most useful one.  The whole idea of the duplicate() is probably quite rare, as most of the time you can achieve the
+power to revert simply by using a transaction.  The duplicate() method will only be useful for keeping copies over multiple
+transactions.  However all look-ups on the reverted object will involve a redirect.
+
+Actually, I can just make revert() return the new locator and the redirect disappears
+
+		long newLocator = repo.revert(locator);
+	
+	L' ------|---+ [d'] +-->[o] // L' is the new locator and points directly to o
+                 |      |
+                 +------+
+
+The odd thing about revert is that only the round trip version can work.  If we don't bring back the new locator, we would have to
+stick with the redirect method.  Actually, that's fine, as I can call it redirect() and make it work the way I have shown above.
+Boy, the whole thing about this round-trip thing has become a bit of an exploration of the nuances of different synonyms.
+
+So that I don't do everyone's head in with this stuff, I should also provide a no-nonsense equivalent of the interface called
+PxVanillaRepository with more straightforward names, such as:	
+
+	add				// store
+	addNoWait		// add
+	copy			// copy
+	copyNoWait		// duplicate
+	replace			// substitute
+	replaceNoWait	// replace
+	remove			// fetch
+	removeNoWait	// remove
+	revive			// reanimate
+	reviveNoWait	// revive
+
+
+I was also thinking that I need to add another method to undelete something, assuming that the remove() method is only a logical
+delete rather than a physical.  My idea was that a remove() would be like garbage collection, where something is marked for
+deletion but some other process will sweep up and reclaim the space from deleted objects.  I think that revive() would be the
+best name for this method.  A revive() can fail if the object has been swept up before you have had the opportunity to undelete it.
+Actually, I need two names, sticking with my model of round-trip and non-round trip names.  So I think reanimate() would be better
+for the round-trip because it implies that not only have we brought the object back into existence but we are putting it back 
+into use.
+
+Okay, just added the non-vanilla methods to the PxRepository and RepositoryApi interfaces and added the methods into DefaultRepository
+that delegate across to the DefaultRepositoryServer, which has versions that just blow up when you call them.  The question is which
+ones do I do first.  At this point in time, the ones that are implemented and working are add, store and copy.  Fetch, renanimate and
+revert should all essentially do the same thing but frig around with the mask differently.  Did remove() first because it should be
+the easiest.  Ended up creating a SlotVisitor interface, an abstract implementation called AbstractSlotVisitor.  I put a traverse() 
+method in AbstractSlotVisitor to walk through all the slots for an object.  Then I made a concrete visitor called RemoveVisitor to
+implement the remove.  My implementation is probably overkill - the quickest way to undelete something is to only mark the head slot
+as removed.  I have erred on the side of safety, though, by marking all the slots.  This will allow us to reclaim fragments quickly
+without having to always hunt for the head slot.
+
+Sunday 03/09/2006
+-----------------
+Okay, the first thing to fix is to make copy() blow when the object has been deleted.  At the moment it still reads it.  I should probably
+rewrite SlotSkin so that the part that currently reads in an object is also a slot visitor.
+
+I changed the traversal so that it has a completely different execution path for a single fragment and massively simplified everything
+by not pulling out all the individual components of the slot into separate method parameters.  This leaves practically no implementation
+in AbstractSlotVisitor put maybe things will change as I add in support for more core repository methods.
+
+Now, for a single fragment, only visitSingleSlot() is called.  For fragmented objects, the sequence goes like this:
+
+	start(headSlot, sizing);
+	visit(fragmentSlot1);	// this is the head slot
+	visit(fragmentSlot2);
+	...
+    visit(fragmentSlotN);
+	finish();
+	
+Also added the locator to Slot, because it is bound to prove useful.	Got CopyVisitor working and also proved that copy() blows up
+when an object has been deleted.  There was another slight bug where the scattering writer was not setting the locator on the space
+request, so store() was always returning 0L, which happened to be right for nearly all of the existing tests, so went by undetected.
+I should really rewrite the writer and make that a slot visitor too.
+
+Put some hooks in CopyVisitor for visiting the index of each slot, so that I could create a FetchVisitor that is identical to CopyVisitor
+in every way except that it updates all the index masks to show that the object has been deleted.  I must be doing something right
+because that worked first time when I added it to the unit tests.
+
+Okay, replace() and substitute() are the only major methods that need to be implemented.  The whole duplicate/redirect/revert family
+should be rarely used.  Duplicate is the only one out of those that is slightly tricky to implement because it involves copying the
+slot data from one place to the other.
+
+So I should do revive() and reanimate().  They should be really straightforward.  Okay, at first look, it seemed that introducing
+a specialisation of AbstractSlotVisitor that only visits the index was a good first step.  So I created AbstractIndexVisitor and
+rewrote RemoteVisitor so that it used this class.  I realised a slight bug where we were only checking that the object wasn't
+already removed when it was not fragmented.  Fixing this properly involved changing SlotVisitor again so that the visit() signature
+is told whether the current slot is the first or last.  This should also be useful to other implementations that need to do specific
+updates to the first and last slot.  This was also a small hurdle that was preventing me from attacking the problem of replacing
+ScatteringWriter with a new AddVisitor.  That will have to go on my to-do list.
+
+The invocation sequence for the visit is still the same for visitSingleSlot() but the for fragmented objects it will now look like:
+
+	start(headSlot, sizing);
+	visitSlot(fragmentSlot1, true, false);	// this is the head slot
+	visitSlot(fragmentSlot2, false, false);
+	...
+    visitSlot(fragmentSlotN, false, true);
+	finish();
+
+
+I created a visitor package and moved all the existing visitor stuff into it.  I think the ma0mi1bu5 package could do with some
+further subpackaging as there is quite a lot of stuff in there now.  Okay, yeah, creating a ReviveVisitor was easy using that stuff.
+Got that working.
+
+
+Monday 04/09/2006
+-----------------
+Created a new IndexVisitor interface to formalise it - mainly because I can't have multiple inheritance for the ReanimateVisitor.  I
+essentially want the functionality of the CopyVisitor but with explicit use of the index too.  I added the same isFirst and isLast
+parameters to it.
+
+Also created a FirstSlotChecker for those classes that have special behaviour for the first slot.  AbstractIndexVisitor now implements
+this new interface.  With that all in place, I created a ReanimateVisitor that is a subclass of CopyVisitor, which is now a
+FirstSlotChecker and an IndexVisitor.
+
+Realised I had both a RepositoryApi and a RepositoryServerApi.  It was the RepositoryApi that I had updated with the new signatures
+so that is the one that I kept.  But I think that RepositoryServerApi is a better name, so I renamed the survivor to this name.
+This now means that PxRepository is the client side interface which maps onto RepositoryServerApi that has a default implementation
+of DefaultRepositoryServer.
+
+Pencilled in an implementation of duplicate() on DefaultRepositoryServer.  The idea is quite simple if not the most efficient.
+You can simply read in the existing data using something like the CopyVisitor.  The only difference will be that you will want to
+update the slot index so that the two objects refer to each other.  The main hurdle to overcome here is to buckle down and
+actually implement the AddVisitor so it can form a base implementation of add, store and duplicate.  Oh and maybe even replace
+and substitute.  As a little preparation, I changed Index so that it now also prints out the value of the redirectLocator.
+
+Okay, I'll call it a day there.
+
+
+Sunday 30/03/2008
+-----------------
+Okay, it has been a long time since I revisited this stuff.  I should really get it copied onto my laptop so I can work on it on
+the train.  I have made some progress with Bob but basically Marky has lost interest in it and the last time we spoke about it
+he seemed happy to accept that subversion was going to be the defacto standard.
+
+First order of the day was to make SlotSkin an interface rather than an implementation.  I am trying to arrive at a layer above
+the cache and everything below it that is a little bit easier to work with.  The slot visitors are good in that they have
+standardised the way that slots are dealt with by code that needs to manipulate them.
+
+Saturday 19/04/2008
+-------------------
+Made CacheEntry an interface rather than an implementation and renamed the implementation to AbstractCacheEntry and made it abstract.
+The CacheEntry interface is now also generic and takes a type, for BlockCacheEntry, this type is now Block.
+
+One thing I noticed is that the traverse() method on SlotSkin should really be part of the AbstractSlotVisitor.  They don't follow the
+visitor pattern where you usually call an accept() method which then calls a concreate visit() method on the visitor.
+
+So first things first, change the interface on SlotSkin from 
+
+	traverse(long locator, SlotVisitor visitor)
+	
+to
+	
+	accept(SlotVisitor)
+
+Sunday 04/05/2008
+-----------------
+I should continue working on the slot skin visitors.  Following an earlier comment, I think the idea was to write a proper visitor
+version for the implementation of add(byte[]).  This should form the basis of add, store, duplicate, replace and substitute.
+
+The add() and store() methods are implemented already but using a different approach.  The duplicate() method has an outline of how
+it should be implemented but that is all.  replace() and substitute() are not implemented at all.
+
+I think the problem with this is that I don't think that the AddVisitor can really be an AbstractSlotVisitor because there is no
+relationship between Slot and FreeSlot.  The scattering writer works its way through free slots whereas the AbstractSlotVisitor uses
+occupied ones.  The first thing to do is to make Slot an interface and then see about creating some implementations of it.  The
+first implementation was UsedSlot, which worked out easy enough.  It turned out the slot constructor with many parameters wasn't being 
+used at all.  It used to use the default constructor but we now pass in the default engine and the locator.
+
+Renamed UnitTestBase to TestHelper because it was causing a failure when automatically running unit tests from test/src.  The only 
+tests that are broken now are testRename and testRemoveHappyDay under DefaultRepositoryManagerTest and I suspec that is due to
+eclipse's dodgy file management.
+
+Since there is a big difference between loading existing slots and free slots, I moved all of the slot reading code out of SlotSkinImpl.
+It now lives in the implementation ExistingSlotSource of the new SlotSource interface.  Now that that is moved out, our visitors do
+not visit the skin any more, they visit the slot source.  That works for now but may need refactoring.
+
+The slot skin doesn't really do much any more - just accepts visitors and let's them walk using the ExistingSlotSource.
+
+Monday 05/05/2008
+-----------------
+Okay, I think that yesterday was good but not really going in exactly the right direction yet.  The slot skin isn't really shaping
+up how I expected.  In some ways I want a layer that completely hides the implementation below it and can be tested in its own
+right.  The server side equivalent of PxRepository should be only one way in which to use the underlying layer.  While the
+visitors are good, it isn't the most intuitive interface because they are named after the PxRepository methods rather than
+something more fundamental.  Also, similar commands are related through inheritance rather than composition, which gives less
+flexibility.  The ScatteringWriter, the ResponsibilityChain and the ExistingSlotSource are all particular to the same family
+of commands and should be pushed out of the DefaultRepositoryServer.
+
+Thursday 15/05/2008
+-------------------
+Working from home today but can't stay focused on the task in hand.  Keep thinking about the repository.  I always keep forgetting
+all the basic methods:
+
+CRUD	single trip		round trip   description
+----------------------------------------------
+C	add					store		 add new objects to the repository
+R	duplicate			copy         copy objects already in the repository
+U	replace				substitute
+D	remove				fetch
+	revive				reanimate
+	redirect			revert	
+
+
+Saturday 17/05/2008
+-------------------
+While at work yesterday, I had some ideas about how class evolution will work - probably had them before but here we go
+
+		// creates a factory for creating different kinds of storage models
+		StorageModelFactory smf = repo.createStorageModelFactory();
+		
+		// get the latest definition of the class
+		PxClass customerClass = smf.readClass("customer");
+		
+
+		PxObject customer = customerClass.createInstance();
+		customer.set("name", "David Brown");
+		
+		PxClass specialCustomerClass = customerClass.extend();
+		specialCustomerClass.associate("age", Integer.class);
+		
+		PxRelationalDatabase rdb = smf.readDatabase("db1");
+		PxTable table = rdb.updateTable("table1");
+		table.addColumn("age", Integer.class);
+	    	    
+	    table.createRow("David Brown", 41);
+	    
+
+
+	
+	PxBlog blog = smf.createBlog();
+	PxBlogEntry entry = blog.createEntry();
+	PxParagraph p1 = entry.createParagraph();
+	p1.set("text", text);
+	PxHyperlink link = entry.createHyperlink();
+	link.set("reference", "http://www.photiczone.com/photos/everest2009");
+	link.set("description", "photos of trip to everest base camp 2009");
+		
+	PxImage image = entry.createImage();
+	image.set("raster", bytes);
+	
+	entry.save();
+	
+	or
+	
+	entry.publish();
+	
+Example usage for an email application	
+	
+	PxPostOffice po = smf.updatePostOffice();
+	PxFolder inbox = po.updateInbox();
+	PxSpamFilter spamFilter = po.readSpamFilter();
+	PxFolder spamFolder = spamFilter.updateSpamFolder();
+	
+	PxIterator<PxMessage> newMessages = po.pull();
+	
+	for (PxMessage message : newMessages) {
+		if (spamFilter.filter(message)) {
+			po.move(spamFolder);
+		} else {
+			po.move(inbox);
+		}
+	}
+	
+	PxMessage newMessage = po.createNewMessage();
+	newMessage.add("to", "marky", "rich", "lucio");
+	newMessage.set("subject", "beers");
+	newMessage.set("text", "anybody up for beers on thursday");
+	
+	PxFolder drafts = po.updateDrafts();
+	drafts.add(newMessage);
+	
+	po.post(newMessage);
+	
+Actually I like the idea that we have default objects for the store - we can have tons of them.  And you could even support this:
+
+	PxMap defaultMap = smf.createOrUpdateMap();
+	
+or actually, maybe just have this be the default behaviour of update() i.e. it does not complain when the object has not been
+created.
+
+This basically takes me one step closer to the idea I had that it can store just about anything.  It will also take me some way
+to being able to create applications and the like without needing things like my index to work.  I can have default lists and
+everything.  In fact PxApplication could be even easier.  I could define the names and types of lots of things  as part of the
+application.
+
+	// build the application programmatically - the default application for this store
+	PxApplication app = smf.updateApplication();
+	app.set("name", "screenplay");
+	
+	// go and get a unique id for the application - which runs an application in another store
+	PxRepository ids = repoman.update("exop://photiczone.com/repo/application/uniqueId");
+	PxApplication app = ids.readApplication();
+	PxObject result = app.run();
+	
+	if (!result.get("success")) {
+		throw new RuntimeException("could not get a unique id: " + result.get("failureReason"));
+	}
+
+	String id = result.get("id");
+	app.set("id", id);
+	app.set("developerUrl", "http://www.photiczone.com");
+	app.set("developerName", "The Media Factory Ltd");
+		
+	PxClass screenplayClass = app.readClass("screenplay");
+	PxObject screenplay = screenplayClass.construct();
+	PxObject cast = app.construct("cast");
+	screenplay.add("titleSuggestion", "The Rocket Scientist");
+	screenplay.add("titleSuggestion", "The Bonobo Princess");
+	StringBuilder pitch = new StringBuilder();
+	pitch.append("A young albino girl undergoes astronaut training to go on the trip of a lifetime,");
+	pitch.append(" made possible by her father a famous rocket scientist.  ");
+	pitch.append("Along the way she meets the project manager of a kind of ark, a huge space ship taking animals to earth.  ");
+	pitch.append("Originally helping the project manager out with engine trouble, the relationship grows until the albino ");
+	pitch.append("faces the dilemma of whether to go with them to earth or return to her great life with her father.  ");
+	screenplay.set("pitch", pitch);
+	
+	
+			
+	PxClass characterClass = app.readClass("character");
+	PxObject xia = characterClass.construct();
+	xia.set("name", xia);
+	xia.set("description", "the central protagonist of the story.  An petite asian albino");
+	xia.add("castingSuggestion", "Jessica Alba");
+	screenplay.add("character", xia);
+	
+	PxObject meena = characterClass.construct();
+	meena.set("character", "Meena");
+	meena.set("description", "project manager for the construction and population of the bonobo princess and its ultimate journey to earth");
+	meena.add("castingSuggestion", "Jennifer Connelly");
+	screenplay.add("character", meena);
+	
+	// maybe construction could miss out a step
+	PxObject timo = app.construct("character");
+	timo.set("name", "Timo");
+	time.add("castingSuggestion", "Chris Cooper");
+	
+	PxObject father = app.construct("relationship");
+	father.set("description", "famous rocket scientist producing the fastest ships known in the volume of space");
+	father.set("from", xia);
+	father.set("to", timo);
+	PxObject daughter = app.construct("relationship");
+	daughter.set("from", timo);
+	daughter.set("to", xia);		
+	screenplay.add("character", "Timo");
+	screenplay.add("relationship", father);
+    screenplay.add("relationship", daughter);
+	
+Maybe we should provide proper constructors with parameters, so I can do something like
+
+	PxObject relationship = cast.construct("relationship", 
+	
+	
+Sunday 18/05/2008
+-----------------
+Okay yesterday I didn't really make any progress in terms of development, I just bashed out lots of ideas about how I want my
+little world to be.  The more I do that the more I think I might be on to something here.  I still need a good name for what I
+represent as PxClass and PxObject.  These are going to be the crux of getting all of this to work reliably.  I do not think
+that using raw serialisation is going to resolve the issue.
+	
+Anyway, at the moment I think the more realistic goal is getting a full set of repository methods to work at the moment I do not
+have implementations for duplicate, replace, substitute, redirect and revert.
+
+I am starting to think that the SlotVisitor approach isn't exactly right.  Although it works for reading or updating existing
+slots, we need another interface to give us the free slots.  So what do we actually get from the free slots?
+
+	Block
+	  BlockControlData
+	  Index	
+	slotId
+	blockId
+	bb
+
+The indentation just shows that the block is used to get the index and the block control data. However, looking at the FreeSlot
+constructor, the block control data is already part of the free slot and can probably by directly updated.  Actually I confirmed
+that by changing it.  So now it looks like this:
+
+	Block
+	  Index	
+	slotId
+	blockId
+	bb
+	blockControlData
+
+Our ExistingSpaceHandler only knows how to release space from the root block at the moment.  Now also removed the block completely
+so that we are down to this:
+	
+    index	
+	slotId
+	blockId
+	bb               - to write the data
+	blockControlData - to allocate the free slot
+
+So the next step is working out what each of these is used for.  Before doing that I have refactored AbstractSlotVisitor so that
+there are now four new overridable methods, which should make it easier to use the same framework to implement the unfinished
+methods:
+
+	isFragmented()
+	isLastFragment()
+	getFirstSlot()
+	getNextSlot();
+
+This is to get around the fact that the existing implementation is based on reading only.  This way I can make the slots be
+free slots and I should be able to spin through them in exactly the same way.  This should take us closer to implementing
+the AddVisitor.
+
+Okay, went ahead and implemented those for AddVisitor, which was pretty easy.  Now I just need to make sure that the following
+are implemented properly and in accordance with ScatteringWriter:
+
+	start()
+	visitSingleSlot()
+	visitSlot()
+
+
+Okay, I have introduce another new prepare() method which is always called by the AbstractSlotVisitor before anyhting else is done.
+The full sequence of events, taking the new methods into account, is now:
+
+	prepare()
+	getFirstSlot()
+	isFragmented(firstSlot)
+	visitSingleSlot(firstSlot)
+
+and for fragmented objects it is
+
+	prepare()
+	getFirstSlot()
+	isFragmented(firstSlot)
+	start(firstSlot)
+	visit(firstSlot)
+	isLastFragment()
+	
+Great success at last!  Replace the scattering writer versions of add() and store() with visitor versions and got them both working.
+So that only leaves duplicate(), replace() and substitute() to implement now.
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+		
+		
+		
+		
+
+		
+				
+		
