@@ -10,12 +10,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.module.CoreModule;
 import com.lbg.module.EngineModule;
 import com.lbg.module.PageDaemonModule;
@@ -26,7 +27,6 @@ import com.lbg.persist.Discovery;
 import com.lbg.persist.PersistenceException;
 import com.lbg.persist.engine.Engine;
 import com.lbg.persist.engine.EngineException;
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.utility.PropertyMap;
 
 /**

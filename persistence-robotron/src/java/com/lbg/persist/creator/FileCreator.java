@@ -1,6 +1,6 @@
 package com.lbg.persist.creator;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.persist.PersistenceException;
 
 public interface FileCreator

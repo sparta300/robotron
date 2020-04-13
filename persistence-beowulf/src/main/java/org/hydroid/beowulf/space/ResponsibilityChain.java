@@ -2,7 +2,9 @@ package org.hydroid.beowulf.space;
 
 import java.util.List;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
+
+
 
 /**
  * space management using a chain of responsibility pattern.

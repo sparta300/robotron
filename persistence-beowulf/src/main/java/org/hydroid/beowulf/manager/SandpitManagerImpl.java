@@ -8,8 +8,9 @@ import org.hydroid.beowulf.model.list.PersistentLinkedListModel;
 import org.hydroid.beowulf.model.list.manager.SinglyLinkedListManager;
 import org.hydroid.beowulf.overlay.Sandpit;
 import org.hydroid.beowulf.storage.LocatorFactory;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 public class SandpitManagerImpl implements SandpitManager {
 	public SandpitManagerImpl(Sandpit sandpit, LocatorFactory locatorFactory) {

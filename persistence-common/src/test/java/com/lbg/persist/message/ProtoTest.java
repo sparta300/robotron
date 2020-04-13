@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.lbg.persist.message.StorageProtos.FreeListRuntime;
-
 
 
 public class ProtoTest
@@ -25,6 +23,7 @@ public class ProtoTest
 			available.add(Boolean.TRUE);
 		}
 		
+		/*
 		final FreeListRuntime runtime = FreeListRuntime.newBuilder().setTotal(count)
 				                                                    .setFree(count)
 				                                                    .setUsed(0)
@@ -36,6 +35,7 @@ public class ProtoTest
 		assertEquals(0, runtime.getUsed());
 		 
 		assertEquals(16, runtime.getSerializedSize());
+		*/
 	}
 
 }

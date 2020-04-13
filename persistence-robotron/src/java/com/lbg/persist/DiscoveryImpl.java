@@ -2,7 +2,7 @@ package com.lbg.persist;
 
 import javax.inject.Inject;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.persist.engine.Engine;
 import com.lbg.persist.structure.raw.VersionNumber;
 

@@ -1,6 +1,8 @@
 package org.hydroid.beowulf.overlay;
 
-import static com.lbg.utility.Characters.*;
+import static com.lbg.utility.Characters.ADDRESS;
+import static com.lbg.utility.Characters.QUESTION_MARK;
+import static com.lbg.utility.Characters.SPACE;
 import static org.hydroid.beowulf.BeowulfConstants.UNSET_LOCATOR;
 
 import java.nio.ByteBuffer;

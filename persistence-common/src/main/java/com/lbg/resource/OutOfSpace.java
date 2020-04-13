@@ -1,5 +1,6 @@
 package com.lbg.resource;
 
+import org.hydroid.file.PhysicalResourceException;
 
 public class OutOfSpace extends PhysicalResourceException
 {

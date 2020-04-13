@@ -5,6 +5,6 @@ public class PersistConstants
 
 	public static int MAGIC = 0xfacebeef;
 
-	public static final int ROOT_BLOCK_ID = 0;
+	public static final long ROOT_BLOCK_ID = 0L;
 
 }

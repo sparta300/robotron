@@ -1,12 +1,12 @@
 package org.hydroid.beowulf.storage;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.nio.ByteBuffer;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static junit.framework.Assert.*;
 
 public class Block56Slot4Subslot4Test {
 

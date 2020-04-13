@@ -11,15 +11,15 @@ import org.hydroid.beowulf.manager.SandpitManager;
 import org.hydroid.beowulf.storage.Locator;
 import org.hydroid.beowulf.storage.general.ApiContext;
 import org.hydroid.beowulf.storage.general.SlotFinder;
+import org.hydroid.file.PhysicalResourceException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.lbg.file.RepositoryFile;
 import com.lbg.persist.BufferBasedObjectSerialiser;
-import com.lbg.persist.daemon.PageDaemon;
+import org.hydroid.page.PageDaemon;
 import com.lbg.persist.daemon.PageException;
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.utility.ApplicationContext;
 import com.lbg.utility.SpringContextBuilder;
 

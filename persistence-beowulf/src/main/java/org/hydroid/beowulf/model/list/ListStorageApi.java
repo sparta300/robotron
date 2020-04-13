@@ -3,8 +3,9 @@ package org.hydroid.beowulf.model.list;
 import org.hydroid.beowulf.model.list.manager.SinglyLinkedListManager;
 import org.hydroid.beowulf.model.list.manager.SinglyLinkedListSegmentManager;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListSegment;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 public interface ListStorageApi {
 	SinglyLinkedListSegment getSegment(long locator) throws PhysicalResourceException;

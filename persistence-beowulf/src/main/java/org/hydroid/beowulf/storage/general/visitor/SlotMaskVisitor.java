@@ -1,8 +1,7 @@
 package org.hydroid.beowulf.storage.general.visitor;
 
 import org.hydroid.beowulf.storage.SlotMask;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface SlotMaskVisitor
 {

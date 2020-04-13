@@ -2,11 +2,12 @@ package com.lbg.persist.engine;
 
 import java.nio.ByteBuffer;
 
+import org.hydroid.file.PhysicalResourceException;
+
 import com.lbg.persist.Address;
 import com.lbg.persist.PersistenceException;
 import com.lbg.persist.structure.Block;
 import com.lbg.persist.structure.Structure;
-import com.lbg.resource.PhysicalResourceException;
 
 /**
  * an interface for getting access to individual components in a repository file.

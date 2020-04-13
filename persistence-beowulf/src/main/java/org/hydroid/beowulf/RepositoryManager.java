@@ -5,8 +5,9 @@ import org.hydroid.beowulf.manager.StorageManager;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.space.SpaceManagementContext;
 import org.hydroid.beowulf.storage.LocatorFactory;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 public interface RepositoryManager {
 	StorageManager getStorageManager(long blockId) throws PhysicalResourceException;

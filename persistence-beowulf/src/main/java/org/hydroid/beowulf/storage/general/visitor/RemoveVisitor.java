@@ -2,8 +2,8 @@ package org.hydroid.beowulf.storage.general.visitor;
 
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.SlotMask;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.resource.ResourceAlreadyRemoved;
 
 /**

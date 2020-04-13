@@ -4,8 +4,7 @@ import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.general.SlotFinder;
 import org.hydroid.beowulf.storage.general.SlotSkin;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface SlotVisitor
 {

@@ -3,7 +3,6 @@ package com.lbg.persist.creator;
 import static com.lbg.persist.structure.StructureType.BLOCK_MAIN;
 import static com.lbg.persist.structure.StructureType.GEOMETRY;
 import static com.lbg.persist.structure.StructureType.LIST_BOOLEAN_8;
-import static com.lbg.persist.structure.StructureType.LIST_DOUBLE;
 import static com.lbg.persist.structure.StructureType.LIST_TELEMETRY_FRAME;
 import static com.lbg.persist.structure.StructureType.MAGIC;
 import static com.lbg.persist.structure.StructureType.STORE_MAIN;
@@ -13,29 +12,28 @@ import static com.lbg.persist.structure.StructureType.VERSION;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.persist.BlockType;
 import com.lbg.persist.PersistenceException;
-import com.lbg.persist.daemon.Page;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageException;
-import com.lbg.persist.daemon.PageIdentifier;
+import org.hydroid.page.Page;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageException;
+import org.hydroid.page.PageIdentifier;
 import com.lbg.persist.daemon.ScratchBuffer;
 import com.lbg.persist.daemon.ScratchBufferImpl;
 import com.lbg.persist.main.Calculator;
-import com.lbg.persist.structure.Structure;
+import com.lbg.persist.structure.BlockPlanner;
 import com.lbg.persist.structure.StructureFactory;
 import com.lbg.persist.structure.StructureLibrary;
-import com.lbg.persist.structure.BlockPlanner;
 import com.lbg.persist.structure.raw.BlockMain;
 import com.lbg.persist.structure.raw.Geometry;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.StoreMain;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.resource.PhysicalResourceException;
 
 public class TelemetryFileCreator implements FileCreator
 {
@@ -54,7 +52,7 @@ public class TelemetryFileCreator implements FileCreator
 	@Override
 	public void createFile(RepositoryFile file, int blockSize,	int maxBlockCount) throws PersistenceException
 	{
-		final PageIdentifier pageId = new PageIdentifier(file, 0, blockSize);
+		final PageIdentifier pageId = new PageIdentifier(file, 0L, blockSize);
 
 		try
 		{

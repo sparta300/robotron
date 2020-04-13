@@ -5,12 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hydroid.beowulf.manager.StorageManager;
 import org.hydroid.beowulf.storage.Slot;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BeowulfSpaceManager implements SpaceManager {
 	

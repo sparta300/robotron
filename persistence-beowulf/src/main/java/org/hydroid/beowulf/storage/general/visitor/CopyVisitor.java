@@ -3,8 +3,8 @@ package org.hydroid.beowulf.storage.general.visitor;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.SlotMask;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.resource.ResourceRemoved;
 
 public class CopyVisitor extends AbstractSlotVisitor implements SlotMaskVisitor, FirstSlotChecker

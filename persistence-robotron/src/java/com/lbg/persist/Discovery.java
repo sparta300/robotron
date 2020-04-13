@@ -1,6 +1,6 @@
 package com.lbg.persist;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.persist.engine.Engine;
 
 public interface Discovery

@@ -3,12 +3,13 @@ package org.hydroid.beowulf.space;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.storage.Slot;
+import org.hydroid.file.PhysicalResourceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 public class NewSpaceHandler implements RequestHandler {
 	public NewSpaceHandler(SpaceManager spaceManager, int incrementMinimumBlocks, StorageListener scavenger) {

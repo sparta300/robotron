@@ -3,8 +3,9 @@ package org.hydroid.beowulf.model.list;
 import java.util.Iterator;
 
 import org.hydroid.beowulf.storage.Locator;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 /**
  * a server-side persistent linked list interface.

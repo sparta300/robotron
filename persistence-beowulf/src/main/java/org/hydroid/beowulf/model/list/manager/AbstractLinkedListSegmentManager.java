@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hydroid.beowulf.manager.FreeList256Manager;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListSegment;
 import org.hydroid.beowulf.overlay.FreeListRuntime;
 import org.hydroid.beowulf.overlay.SlotOverhead;
 import org.hydroid.beowulf.storage.Locator;
 import org.hydroid.beowulf.storage.LocatorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract public class AbstractLinkedListSegmentManager implements LinkedListSegmentManager {
 	public AbstractLinkedListSegmentManager(long blockId, SlotOverhead so, SinglyLinkedListSegment[] segments, 

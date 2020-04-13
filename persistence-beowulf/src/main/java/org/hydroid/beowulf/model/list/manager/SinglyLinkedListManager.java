@@ -1,13 +1,13 @@
 package org.hydroid.beowulf.model.list.manager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hydroid.beowulf.manager.FreeList256ManagerImpl;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListHead;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListHeadSlot;
 import org.hydroid.beowulf.overlay.SlotOverhead;
 import org.hydroid.beowulf.storage.Locator;
 import org.hydroid.beowulf.storage.LocatorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SinglyLinkedListManager extends AbstractLinkedListSegmentManager {
 	

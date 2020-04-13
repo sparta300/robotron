@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.hydroid.file.SearchPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,7 +2,7 @@ package com.lbg.persist;
 
 import java.io.Serializable;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface ObjectSerialiser
 {

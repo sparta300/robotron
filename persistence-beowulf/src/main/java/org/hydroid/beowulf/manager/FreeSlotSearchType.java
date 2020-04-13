@@ -1,6 +1,6 @@
 package org.hydroid.beowulf.manager;
 
-import static org.hydroid.beowulf.BeowulfConstants.*;
+import static org.hydroid.beowulf.BeowulfConstants.SLOT_USED;
 
 public enum FreeSlotSearchType {
 	FREE {

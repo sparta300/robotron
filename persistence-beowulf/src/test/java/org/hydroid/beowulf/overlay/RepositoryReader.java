@@ -14,13 +14,13 @@ import org.hydroid.beowulf.manager.StorageManagerImpl;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListHeadSlot;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListSegmentSlot;
 import org.hydroid.beowulf.storage.LocatorFactory;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.file.RepositoryFile;
-import com.lbg.persist.daemon.Page;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageException;
-import com.lbg.persist.daemon.PageIdentifier;
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.RepositoryFile;
+import org.hydroid.page.Page;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageException;
+import org.hydroid.page.PageIdentifier;
 import com.lbg.utility.ApplicationContext;
 import com.lbg.utility.SpringContextBuilder;
 

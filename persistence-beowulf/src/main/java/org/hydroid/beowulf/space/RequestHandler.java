@@ -1,6 +1,6 @@
 package org.hydroid.beowulf.space;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface RequestHandler {
 	void handleRequest(SpaceRequest request) throws PhysicalResourceException;

@@ -11,8 +11,7 @@ import org.hydroid.beowulf.storage.Locator;
 import org.hydroid.beowulf.storage.LocatorFactory;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.SlotImpl;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 /**
  * a simple interface for finding slots by locator or block/slot ID.

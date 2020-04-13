@@ -9,22 +9,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.hydroid.file.DirectoryList;
+import org.hydroid.file.PhysicalResourceException;
 import org.junit.Test;
 
 import com.google.inject.Injector;
-import com.lbg.file.DirectoryList;
 import com.lbg.file.RepositoryFile;
 import com.lbg.module.PageDaemonModule;
 import com.lbg.module.PropertyModule;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageException;
-import com.lbg.persist.daemon.PageIdentifier;
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.utility.PropertyMap;
 
 public class RepositoryFileTest
 {
-	private static final String RESOURCE_DIRECTORY = "src/resource";
+	private static final String RESOURCE_DIRECTORY = "src/test/resources";
 	private static final String FILE_NAME = "example.ts";
 	
 	@Test
@@ -92,6 +89,8 @@ public class RepositoryFileTest
 
 	private Injector getInjector()
 	{
-		return createInjector(new PropertyModule("src/resource/page-cache.properties"), new PageDaemonModule());
+		// maybe src/test/resources/page-cache.properties
+		// maybe page-cache.properties with folder in classpath
+		return createInjector(new PropertyModule("src/test/resources/page-cache.properties"), new PageDaemonModule());
 	}
 }

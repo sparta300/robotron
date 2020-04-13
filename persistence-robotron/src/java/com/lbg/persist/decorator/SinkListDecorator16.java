@@ -3,6 +3,8 @@ package com.lbg.persist.decorator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hydroid.file.PhysicalResourceException;
+
 import com.lbg.persist.api.Sink;
 import com.lbg.persist.api.Source;
 import com.lbg.persist.mask.Mask7;
@@ -15,7 +17,6 @@ import com.lbg.persist.structure.header.BooleanList8;
 import com.lbg.persist.structure.header.Count16;
 import com.lbg.persist.structure.header.DoubleList;
 import com.lbg.resource.OutOfSpace;
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.resource.ResourceEmpty;
 
 public class SinkListDecorator16 implements Sink<Double>, Source<Double>

@@ -1,6 +1,6 @@
 package org.hydroid.beowulf;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface LocationManagerApi
 

@@ -15,8 +15,9 @@ import org.hydroid.beowulf.storage.LocatorFactory;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.SlotMask;
 import org.hydroid.beowulf.storage.general.SlotFinder;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 
 public class AddVisitor extends AbstractSlotVisitor

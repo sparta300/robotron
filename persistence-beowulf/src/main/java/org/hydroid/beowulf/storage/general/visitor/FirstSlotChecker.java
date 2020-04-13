@@ -1,8 +1,9 @@
 package org.hydroid.beowulf.storage.general.visitor;
 
 import org.hydroid.beowulf.storage.Slot;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 public interface FirstSlotChecker
 {

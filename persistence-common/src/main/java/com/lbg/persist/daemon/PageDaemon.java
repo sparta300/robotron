@@ -1,6 +1,6 @@
 package com.lbg.persist.daemon;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface PageDaemon extends AlgorithmCallback
 {

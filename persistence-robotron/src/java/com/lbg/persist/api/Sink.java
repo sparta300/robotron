@@ -1,6 +1,6 @@
 package com.lbg.persist.api;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface Sink<T>
 {

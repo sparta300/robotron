@@ -1,6 +1,6 @@
 package com.lbg.persist.daemon;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public class PageException extends PhysicalResourceException
 {

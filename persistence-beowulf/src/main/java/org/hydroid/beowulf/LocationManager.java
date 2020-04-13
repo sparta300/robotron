@@ -16,16 +16,16 @@ import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.space.SpaceManagementContext;
 import org.hydroid.beowulf.space.SpaceManagementContextFactory;
 import org.hydroid.beowulf.storage.LocatorFactory;
+import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbg.file.Directory;
-import com.lbg.file.FileMode;
+import org.hydroid.file.Directory;
+import org.hydroid.file.FileMode;
 import com.lbg.file.FileSuffixFilter;
-import com.lbg.file.RepositoryFile;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageIdentifier;
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.RepositoryFile;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageIdentifier;
 import com.lbg.resource.ResourceNotFound;
 
  

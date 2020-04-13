@@ -1,6 +1,6 @@
 package org.hydroid.beowulf.storage.general;
 
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public interface GeneralStorageApi {
     public void add(byte[] bytes)

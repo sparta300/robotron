@@ -1,29 +1,30 @@
 package com.lbg.persist.creator;
 
+import static com.lbg.persist.PersistConstants.ROOT_BLOCK_ID;
 import static com.lbg.persist.structure.StructureType.BLOCK_MAIN;
 import static com.lbg.persist.structure.StructureType.GEOMETRY;
 import static com.lbg.persist.structure.StructureType.MAGIC;
 import static com.lbg.persist.structure.StructureType.STORE_MAIN;
 import static com.lbg.persist.structure.StructureType.TELEMETRY_STREAM;
 import static com.lbg.persist.structure.StructureType.VERSION;
-import static com.lbg.persist.PersistConstants.ROOT_BLOCK_ID;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import javax.inject.Inject;
 
+import org.hydroid.file.PhysicalResourceException;
+import org.hydroid.page.Page;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageException;
+import org.hydroid.page.PageIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.persist.BlockType;
 import com.lbg.persist.PersistenceException;
 import com.lbg.persist.Swizzler;
-import com.lbg.persist.daemon.Page;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageException;
-import com.lbg.persist.daemon.PageIdentifier;
 import com.lbg.persist.daemon.ScratchBuffer;
 import com.lbg.persist.daemon.ScratchBufferImpl;
 import com.lbg.persist.structure.BlockPlanner;
@@ -34,7 +35,6 @@ import com.lbg.persist.structure.raw.Geometry;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.StoreMain;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.resource.PhysicalResourceException;
 
 /**
  * a file creator that adds a manifest.
@@ -162,7 +162,7 @@ public class ManifestCreator implements FileCreator
 		// spin through all of the remaining blocks and fill them with wilderness
 		for (int b = 1; b < maxBlockCount; b++)
 		{
-			final PageIdentifier pageId = new PageIdentifier(b, blockSize, file);
+			final PageIdentifier pageId = new PageIdentifier(file, blockSize * 1L, b);
 			final Page page = pageDaemon.make(pageId);
 			final ByteBuffer pageByteBuffer = page.getByteBuffer();
 			final BlockPlanner planner = new BlockPlanner(structureLibrary, structureFactory, scratch, pageByteBuffer, blockSize);

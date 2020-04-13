@@ -42,7 +42,6 @@ public class PropertyModule extends AbstractModule
 		bindProperties(propertyFileForEnv);
 	}
 	
-	
 	private void bindProperties(String fileName)
 	{
 		PropertyMap rawProperties;

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hydroid.beowulf.SlotOverlayType;
 import org.hydroid.beowulf.StorageManagerContext;
 import org.hydroid.beowulf.overlay.BlockOverhead;
@@ -20,8 +18,10 @@ import org.hydroid.beowulf.storage.LocatorFactory;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.SlotImpl;
 import org.hydroid.beowulf.storage.SlotMask;
+import org.hydroid.file.PhysicalResourceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.lbg.resource.PhysicalResourceException;
 
 /**
  * an implementation of a general storage unit manager.

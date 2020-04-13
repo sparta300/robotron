@@ -14,10 +14,9 @@ import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListHead;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListSegment;
 import org.hydroid.beowulf.storage.Locator;
 import org.hydroid.beowulf.storage.LocatorFactory;
+import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.resource.ResourceEmpty;
 
 public class LifoLinkedListModelImpl implements PersistentLinkedListModel

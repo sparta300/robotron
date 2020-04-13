@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hydroid.beowulf.storage.Slot;
+import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lbg.resource.OutOfSpace;
-import com.lbg.resource.PhysicalResourceException;
+
 
 /**
  * space request handler that tries to satisfy the request using free slots already in the store.

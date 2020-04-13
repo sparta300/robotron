@@ -13,17 +13,18 @@ import java.nio.ByteBuffer;
 
 import javax.inject.Inject;
 
+import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.persist.PersistenceException;
 import com.lbg.persist.SafeCast;
 import com.lbg.persist.Swizzler;
-import com.lbg.persist.daemon.Page;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageException;
-import com.lbg.persist.daemon.PageIdentifier;
+import org.hydroid.page.Page;
+import org.hydroid.page.PageException;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageIdentifier;
 import com.lbg.persist.structure.ListHelper;
 import com.lbg.persist.structure.StructureFactory;
 import com.lbg.persist.structure.StructureLibrary;
@@ -31,7 +32,6 @@ import com.lbg.persist.structure.raw.Geometry;
 import com.lbg.persist.structure.raw.Header;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.utility.PropertyMap;
 
 /**

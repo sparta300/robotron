@@ -12,14 +12,15 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lbg.file.FileMode;
 import com.lbg.file.RepositoryFile;
 import com.lbg.persist.SafeCast;
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.utility.PropertyMap;
+
 
 /**
  * an implementation of PageDaemon.

@@ -2,7 +2,7 @@ package com.lbg.persist.engine;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.persist.structure.raw.Geometry;
 
 public class RepositoryFileHolder

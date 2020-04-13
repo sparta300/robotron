@@ -16,6 +16,10 @@ import java.util.zip.Adler32;
 
 import javax.inject.Inject;
 
+import org.hydroid.file.PhysicalResourceException;
+import org.hydroid.page.Page;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +27,8 @@ import com.lbg.persist.Address;
 import com.lbg.persist.NioHelper;
 import com.lbg.persist.PersistConstants;
 import com.lbg.persist.PersistenceException;
-import com.lbg.persist.SafeCast;
 import com.lbg.persist.Swizzler;
 import com.lbg.persist.Unset;
-import com.lbg.persist.daemon.Page;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageIdentifier;
 import com.lbg.persist.structure.Block;
 import com.lbg.persist.structure.BlockBuilder;
 import com.lbg.persist.structure.BlockReader;
@@ -39,8 +39,8 @@ import com.lbg.persist.structure.raw.Geometry;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.StoreMain;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.resource.PhysicalResourceException;
 import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.SafeCast;
 
 /**
  * an basic implementation of {@link TranslationLookasideBuffer}.
@@ -143,7 +143,7 @@ public class TranslationLookasideBufferImpl implements TranslationLookasideBuffe
 				
 		// cache miss
 		log.debug("loading component b" + blockId + "s" + componentId);
-		final PageIdentifier pageId = new PageIdentifier(blockId, holder.getBlockSize(), holder.getFile());
+		final PageIdentifier pageId = new PageIdentifier(holder.getFile(), blockId * 1L, holder.getBlockSize());
 		final Page page = pageDaemon.fetch(pageId);
 		final ByteBuffer pageByteBuffer = page.getByteBuffer();
 		

@@ -11,18 +11,18 @@ import org.hydroid.beowulf.space.SpaceManagementContextFactory;
 import org.hydroid.beowulf.space.SpaceManagementContextFactoryImpl;
 import org.hydroid.beowulf.storage.Block56Slot4Subslot4;
 import org.hydroid.beowulf.storage.Slot;
+import org.hydroid.file.PhysicalResourceException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.inject.Injector;
-import com.lbg.file.Directory;
+import org.hydroid.file.Directory;
 import com.lbg.module.PageDaemonModule;
 import com.lbg.module.PropertyModule;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageDaemonImpl;
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageDaemonImpl;
 import com.lbg.utility.Exceptions;
 
 public class LocationManagerTest {
@@ -83,6 +83,6 @@ public class LocationManagerTest {
 	
 	private Injector getInjector()
 	{
-		return createInjector(new PropertyModule("test/resource/page-cache.properties"), new PageDaemonModule());
+		return createInjector(new PropertyModule("page-cache.properties"), new PageDaemonModule());
 	}
 }

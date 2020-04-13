@@ -2,7 +2,7 @@ package org.hydroid.beowulf;
 
 import org.hydroid.beowulf.space.SpaceManagementContextFactory;
 
-import com.lbg.persist.daemon.PageDaemon;
+import org.hydroid.page.PageDaemon;
 
 public class InstallationManager implements InstallationManagerApi {
 	public InstallationManager(String hostName, PageDaemon pageDaemon, SpaceManagementContextFactory spaceManagementContextFactory,

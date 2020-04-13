@@ -12,8 +12,7 @@ import org.hydroid.beowulf.storage.general.visitor.ReanimateVisitor;
 import org.hydroid.beowulf.storage.general.visitor.RemoveVisitor;
 import org.hydroid.beowulf.storage.general.visitor.ReviveVisitor;
 import org.hydroid.beowulf.storage.general.visitor.StoreVisitor;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 public class GeneralStorageApiImpl implements GeneralStorageApi
 {

@@ -3,9 +3,9 @@ package org.hydroid.beowulf.tool;
 import org.hydroid.beowulf.overlay.OverlayFactory;
 import org.hydroid.beowulf.storage.LocatorFactory;
 
-import com.lbg.file.RepositoryFile;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageIdentifier;
+import org.hydroid.file.RepositoryFile;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageIdentifier;
 
 public class StoreCreatorContext {
 	

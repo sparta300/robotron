@@ -5,8 +5,9 @@ import java.util.concurrent.Callable;
 
 import org.hydroid.beowulf.manager.StorageManager;
 import org.hydroid.beowulf.storage.Slot;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 public interface SpaceManager extends StorageListener, RequestHandler {
 

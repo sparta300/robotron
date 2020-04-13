@@ -15,8 +15,7 @@ import org.hydroid.beowulf.storage.Locator;
 import org.hydroid.beowulf.storage.LocatorFactory;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.SlotMask;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 /**
  * writes a space request into the store using the slots that have been allocated for it.

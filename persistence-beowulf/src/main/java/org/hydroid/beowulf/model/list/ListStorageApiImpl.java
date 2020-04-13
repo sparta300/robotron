@@ -30,8 +30,7 @@ import org.hydroid.beowulf.storage.general.SlotFinder;
 import org.hydroid.beowulf.storage.general.SlotSkinImpl;
 import org.hydroid.beowulf.storage.general.visitor.CopyVisitor;
 import org.hydroid.beowulf.storage.general.visitor.StoreVisitor;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 import com.lbg.resource.ResourceNotFound;
 
 public class ListStorageApiImpl implements ListStorageApi {

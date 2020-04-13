@@ -3,8 +3,8 @@ package com.lbg.module;
 import com.google.inject.AbstractModule;
 import com.lbg.persist.daemon.EvictionAlgorithm;
 import com.lbg.persist.daemon.LruAlgorithm;
-import com.lbg.persist.daemon.PageDaemon;
-import com.lbg.persist.daemon.PageDaemonImpl;
+import org.hydroid.page.PageDaemon;
+import org.hydroid.page.PageDaemonImpl;
 
 /**
  * 

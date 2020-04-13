@@ -3,8 +3,9 @@ package org.hydroid.beowulf.storage.general.visitor;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.SlotMask;
+import org.hydroid.file.PhysicalResourceException;
 
-import com.lbg.resource.PhysicalResourceException;
+
 
 /**
  * a specialisation of {@link AbstractSlotVisitor} for subclasses that are only interested in modifying the index mask of each slot.

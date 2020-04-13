@@ -9,11 +9,11 @@ package org.hydroid.beowulf.space;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.storage.Slot;
 import org.hydroid.beowulf.storage.general.AddObjectRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * represents any request for slot space.

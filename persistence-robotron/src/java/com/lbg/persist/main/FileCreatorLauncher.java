@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 import com.lbg.module.CoreModule;
 import com.lbg.module.EngineModule;
 import com.lbg.module.PageDaemonModule;

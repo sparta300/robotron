@@ -1,8 +1,7 @@
 package org.hydroid.beowulf.storage.general;
 
 import org.hydroid.beowulf.storage.Slot;
-
-import com.lbg.resource.PhysicalResourceException;
+import org.hydroid.file.PhysicalResourceException;
 
 /**
  * an interface for locating slots by locator or block/slot IDs.
