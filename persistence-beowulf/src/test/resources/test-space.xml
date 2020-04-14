@@ -32,5 +32,10 @@
 	 <bean id="spaceManager" class="org.hydroid.beowulf.space.BeowulfSpaceManager">
 	 </bean>
 	 
+	<bean id="spaceManagementContext" class="org.hydroid.beowulf.space.SpaceManagementContextImpl">
+		<constructor-arg index="0" ref="spaceManager"/>
+		<constructor-arg index="1" ref="chain"/>
+		<constructor-arg index="2" ref="locatorFactory"/>
+	</bean> 
 	
 </beans>	

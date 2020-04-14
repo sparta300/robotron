@@ -51,9 +51,12 @@ public class RepositoryOverhead extends AbstractOverlay
 	{
 		final StringBuilder buf = new StringBuilder();
 		buf.append("nextBlockId=").append(nextBlockId.get());
-		buf.append(" transactionManager=").append(
-				transactionManagerLocator.get());
-		buf.append(" spaceManager=").append(spaceManagerLocator.get());
+		buf.append(" transactionManager=");
+		long tx = transactionManagerLocator.get();
+		buf.append(tx == UNSET_LOCATOR ? "?" : tx);
+		buf.append(" spaceManager=");
+		long space = spaceManagerLocator.get();
+		buf.append(space == UNSET_LOCATOR ? "?" : space);
 		return buf.toString();
 	}
 

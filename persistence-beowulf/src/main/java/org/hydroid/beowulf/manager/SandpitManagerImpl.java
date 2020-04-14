@@ -31,6 +31,8 @@ public class SandpitManagerImpl implements SandpitManager {
 		return new LifoLinkedListModelImpl(locator, api, locatorFactory);
 	}
 
+	public Sandpit getSandpit() { return sandpit; }
+	
 	private LocatorFactory locatorFactory;
 	private Sandpit sandpit;
 }

@@ -17,6 +17,7 @@ import org.hydroid.beowulf.manager.StorageManagerImpl;
 import org.hydroid.beowulf.overlay.BlockOverhead;
 import org.hydroid.beowulf.overlay.FreeSlotList;
 import org.hydroid.beowulf.overlay.OverlayFactory;
+import org.hydroid.beowulf.overlay.RepositoryOverhead;
 import org.hydroid.beowulf.overlay.RootBlock;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.overlay.StorageBlock;
@@ -25,13 +26,12 @@ import org.hydroid.beowulf.space.SpaceManagementContext;
 import org.hydroid.beowulf.space.SpaceManager;
 import org.hydroid.beowulf.storage.LocatorFactory;
 import org.hydroid.file.PhysicalResourceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.hydroid.file.RepositoryFile;
 import org.hydroid.page.Page;
 import org.hydroid.page.PageDaemon;
 import org.hydroid.page.PageIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -43,10 +43,7 @@ import org.hydroid.page.PageIdentifier;
 public class BeowulfRepositoryManager implements RepositoryManager {
 	private static final Logger logger = LoggerFactory.getLogger(RepositoryManager.class);
 	
-	public Sizing getSizing() { return sz; }
-	public SandpitManager getSandpitManager() { return sandpit; }
-	public LocatorFactory getLocatorFactory() { return locatorFactory; }
-	public SpaceManagementContext getSpaceManagementContext() { return spaceManagementContext; }
+
 
 	private final Map<Long, StorageManager> lookUp = new HashMap<Long, StorageManager>();
 	private final int blockSize;
@@ -57,8 +54,9 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 	private final Sizing sz;
 	private final RepositoryFile repoFile;
 	private final PageDaemon pageDaemon;
+	private final RepositoryOverhead repositoryOverhead;
 	private final RuntimeManager runtime;
-	private final SandpitManager sandpit;
+	private final SandpitManager sandpitManager;
 	private final SpaceManager space;
 	private final StorageManagerContext storageManagerContext;
 	private final LocatorFactory locatorFactory;
@@ -93,6 +91,7 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 		Page rootPage = pageDaemon.pageIn(rootPageId);
 		pageDaemon.pin(rootPage);
 		rootBlock = new RootBlock(rootPage.getByteBuffer(), reader, locatorFactory);
+		this.repositoryOverhead = rootBlock.getRepositoryOverhead();
 		sz = rootBlock.getSizing();
 		blockSize = sz.getBlockSize();
 		
@@ -103,7 +102,7 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 		FreeSlotList fsl = rootBlock.getFreeSlotList();
 		BlockOverhead bo = rootBlock.getBlockOverhead();
 		runtime = new BeowulfRuntimeManager(rootBlock.getRepositoryOverhead());
-		sandpit = new SandpitManagerImpl(rootBlock.getSandpit(), locatorFactory);
+		sandpitManager = new SandpitManagerImpl(rootBlock.getSandpit(), locatorFactory);
 		addManager(0L, new StorageManagerImpl(storageManagerContext, 0L, bo, fsl, 
 				                              rootBlock.getSlotOverheads(), 
 				                              rootBlock.getBuffers(),
@@ -167,6 +166,15 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 	public long getBlockCount() {
 		return runtime.getBlockCount();
 	}
+	
+	public Sizing getSizing() { return sz; }
+	public SandpitManager getSandpitManager() { return sandpitManager; }
+	public LocatorFactory getLocatorFactory() { return locatorFactory; }
+	public SpaceManagementContext getSpaceManagementContext() { return spaceManagementContext; }
+	public RepositoryOverhead getRepositoryOverhead() { return repositoryOverhead; }
+	
+	@Override
+	public int getPageCacheSize() { return pageDaemon.getPageLimit(); }
 
 	@Override
 	public void shutdown() throws PhysicalResourceException {

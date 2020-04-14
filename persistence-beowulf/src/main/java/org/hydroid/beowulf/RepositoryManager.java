@@ -2,6 +2,7 @@ package org.hydroid.beowulf;
 
 import org.hydroid.beowulf.manager.SandpitManager;
 import org.hydroid.beowulf.manager.StorageManager;
+import org.hydroid.beowulf.overlay.RepositoryOverhead;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.space.SpaceManagementContext;
 import org.hydroid.beowulf.storage.LocatorFactory;
@@ -30,5 +31,9 @@ public interface RepositoryManager {
 	
 	public long getBlockCount();
 	
+	public int getPageCacheSize();
+	
 	SpaceManagementContext getSpaceManagementContext();
+	
+	RepositoryOverhead getRepositoryOverhead();
 }

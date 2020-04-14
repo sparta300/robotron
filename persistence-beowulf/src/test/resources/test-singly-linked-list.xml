@@ -16,8 +16,8 @@
 	<bean id="configuration" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="properties">
       		<value>
-         	defaultRepositoryLocation=
-         	cacheSize=10
+         	defaultRepositoryLocation=/Users/smiley/ews/github/robotron/persistence-beowulf/rt/repo
+         	cacheSize=50
          	defaultBlockSize=1024
          	defaultSlotSize=128
          	defaultRepositoryName=singly
