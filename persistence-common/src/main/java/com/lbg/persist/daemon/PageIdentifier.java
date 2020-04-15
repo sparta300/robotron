@@ -1,6 +1,6 @@
 package com.lbg.persist.daemon;
 
-import com.lbg.file.RepositoryFile;
+import org.hydroid.file.RepositoryFile;
 
 /**
  * uniquely allows you to identify a block of raw data within a file.

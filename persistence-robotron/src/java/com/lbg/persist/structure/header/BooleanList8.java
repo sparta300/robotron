@@ -1,7 +1,7 @@
 package com.lbg.persist.structure.header;
 
-import static com.lbg.file.FileConstants.BOOLEAN_BYTE_FALSE;
-import static com.lbg.file.FileConstants.BOOLEAN_BYTE_TRUE;
+import static org.hydroid.file.FileConstants.BOOLEAN_BYTE_FALSE;
+import static org.hydroid.file.FileConstants.BOOLEAN_BYTE_TRUE;
 
 import java.nio.ByteBuffer;
 

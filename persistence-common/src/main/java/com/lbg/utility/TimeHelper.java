@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.mfdev.utility.Characters;
+
 public class TimeHelper 
 {
 	private static final String[] timeUnits = { "nanos", "micros", "millis", "seconds" };

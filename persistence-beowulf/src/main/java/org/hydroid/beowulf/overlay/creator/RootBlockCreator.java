@@ -68,8 +68,8 @@ public class RootBlockCreator extends CompositeOverlay implements RootOverlay
 
 		// write out the block overhead data
 		bo.setBlockId(0L);
-		bo.setTotal(calculator.getRootBlockSlotCount());
-		bo.setFree(calculator.getRootBlockSlotCount());
+		bo.setTotal(rootBlockSlotCount);
+		bo.setFree(rootBlockSlotCount);
 		bo.setUsed(0);
 
 		// back the position up so that we can re-read the 'total' part of the

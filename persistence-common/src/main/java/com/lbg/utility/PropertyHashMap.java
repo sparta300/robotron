@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.lbg.file.FileHelper;
+import org.hydroid.file.FileHelper;
 
 /**
  * make a properties available as a map and a properties object.

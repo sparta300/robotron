@@ -2,6 +2,8 @@ package com.lbg.utility;
 
 import java.util.Calendar;
 
+import com.mfdev.utility.Characters;
+
 /**
  * an immutable object representing a date, supporting the common formats 
  * used in file names etc.
