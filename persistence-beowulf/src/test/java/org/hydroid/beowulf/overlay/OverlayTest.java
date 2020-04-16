@@ -12,25 +12,29 @@ import java.nio.ByteBuffer;
 import org.hydroid.beowulf.overlay.creator.RootBlockCreator;
 import org.hydroid.beowulf.overlay.creator.StorageBlockCreator;
 import org.hydroid.beowulf.storage.LocatorFactory;
-import org.hydroid.file.PhysicalResourceException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import org.hydroid.file.DirectoryList;
+import org.hydroid.file.PhysicalResourceException;
 import org.hydroid.file.RepositoryFile;
 import org.hydroid.page.Page;
 import org.hydroid.page.PageDaemon;
 import org.hydroid.page.PageException;
 import org.hydroid.page.PageIdentifier;
-import com.lbg.utility.ApplicationContext;
-import com.lbg.utility.SpringContextBuilder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.mfdev.utility.SpringContextBuilder;
+import com.mfdev.utility.SpringContextBuilderImpl;
 
 public class OverlayTest {
+	private LocatorFactory locatorFactory;	
+	private ClassPathXmlApplicationContext appctx;
+	
 	@Before
 	public void init() {
-		SpringContextBuilder builder = new SpringContextBuilder();
+		SpringContextBuilder builder = new SpringContextBuilderImpl();
 		builder.add("test-overlay.xml");
 		appctx = builder.build();
 		locatorFactory = getBean("locatorFactory");
@@ -325,7 +329,5 @@ public class OverlayTest {
 	private <T> T getBean(String name) {
 		return (T) appctx.getBean(name);
 	}
-	
-	private LocatorFactory locatorFactory;	
-	private ApplicationContext appctx;
+
 }

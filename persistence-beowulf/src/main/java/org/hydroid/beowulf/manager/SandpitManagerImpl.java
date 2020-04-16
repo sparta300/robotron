@@ -13,6 +13,9 @@ import org.hydroid.file.PhysicalResourceException;
 
 
 public class SandpitManagerImpl implements SandpitManager {
+	private final LocatorFactory locatorFactory;
+	private final Sandpit sandpit;
+	
 	public SandpitManagerImpl(Sandpit sandpit, LocatorFactory locatorFactory) {
 		this.sandpit = sandpit;
 		this.locatorFactory = locatorFactory;
@@ -21,10 +24,12 @@ public class SandpitManagerImpl implements SandpitManager {
 	public PersistentLinkedListModel getLinkedList(ListStorageApi api) throws PhysicalResourceException {
 		long locator = sandpit.getLinkedListLocator();
 		
+		// if the list does not exist, return a model that can be used to read it
 		if (locator != UNSET_LOCATOR) {
 			return new LifoLinkedListModelImpl(locator, api, locatorFactory);
 		}
 		
+		// otherwise create a new one and put its locator in the sandpit
 		SinglyLinkedListManager headManager = api.newSinglyLinkedList();
 		locator = headManager.getLocator();
 		sandpit.setLinkedListLocator(locator);
@@ -32,7 +37,4 @@ public class SandpitManagerImpl implements SandpitManager {
 	}
 
 	public Sandpit getSandpit() { return sandpit; }
-	
-	private LocatorFactory locatorFactory;
-	private Sandpit sandpit;
 }

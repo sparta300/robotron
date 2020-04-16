@@ -21,6 +21,11 @@ import com.lbg.persist.pointer.LongPointer;
  * @author smiley
  */
 public class SinglyLinkedListSegment extends AbstractOverlay {
+	private static final Logger logger = LoggerFactory.getLogger(SinglyLinkedListSegment.class);
+
+	private final LongPointer dataLocator;
+	private final LongPointer nextSegmentLocator;
+
 	public SinglyLinkedListSegment(ByteBuffer bb, LocatorFactory locatorFactory) {
 		super(bb, locatorFactory);
 		dataLocator = new LongPointer(bb);
@@ -53,13 +58,8 @@ public class SinglyLinkedListSegment extends AbstractOverlay {
 	}
 
 	public void setDataLocator(long value) { dataLocator.set(value); }	
-	public void setNextSegmentLocator(long value) { nextSegmentLocator.set(value);	}	
+	public void setNextSegmentLocator(long value) { nextSegmentLocator.set(value); }	
 
 	public long getDataLocator() { return dataLocator.get(); }	
-	public long getNextSegmentLocator() { return nextSegmentLocator.get(); }
-
-	private LongPointer dataLocator;
-	private LongPointer nextSegmentLocator;
-
-	private static final Logger logger = LoggerFactory.getLogger(SinglyLinkedListSegment.class);
+	public long getNextSegmentLocator() { return nextSegmentLocator.get(); }	
 }

@@ -15,16 +15,22 @@ import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListHeadSlot;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListSegmentSlot;
 import org.hydroid.beowulf.storage.LocatorFactory;
 import org.hydroid.file.PhysicalResourceException;
-
 import org.hydroid.file.RepositoryFile;
 import org.hydroid.page.Page;
 import org.hydroid.page.PageDaemon;
 import org.hydroid.page.PageException;
 import org.hydroid.page.PageIdentifier;
-import com.lbg.utility.ApplicationContext;
-import com.lbg.utility.SpringContextBuilder;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.mfdev.utility.SpringContextBuilder;
+import com.mfdev.utility.SpringContextBuilderImpl;
 
 public class RepositoryReader {
+	private LocatorFactory locatorFactory;
+	private ClassPathXmlApplicationContext appctx;
+	private final OverlayFactory reader;
+	private static final int BLOCK_SIZE = 1024;
+	
 	private RepositoryReader(String[] args) {
 		String ctx = args[0];
 		SpringContextBuilder builder = map.get(ctx);
@@ -153,16 +159,12 @@ public class RepositoryReader {
 	private static final Map<String, SpringContextBuilder> map = new HashMap<String, SpringContextBuilder>();
 	
 	static {
-		SpringContextBuilder builder = new SpringContextBuilder();
+		SpringContextBuilder builder = new SpringContextBuilderImpl();
 		builder.add("test-reader.xml");
 		builder.add("test-reader-config.xml");
 		builder.add("test-repoman.xml");
 		builder.add("test-space.xml");
 		map.put("ctx1", builder);
 	}
-	
-	private LocatorFactory locatorFactory;
-	private ApplicationContext appctx;
-	private final OverlayFactory reader;
-	private static final int BLOCK_SIZE = 1024;
+
 }

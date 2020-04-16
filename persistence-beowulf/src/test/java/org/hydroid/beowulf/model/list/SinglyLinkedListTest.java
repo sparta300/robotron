@@ -19,21 +19,22 @@ import org.hydroid.page.PageDaemon;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.lbg.persist.BufferBasedObjectSerialiser;
 import com.lbg.persist.daemon.PageException;
-import com.lbg.utility.ApplicationContext;
-import com.lbg.utility.SpringContextBuilder;
+import com.mfdev.utility.SpringContextBuilder;
+import com.mfdev.utility.SpringContextBuilderImpl;
 
 public class SinglyLinkedListTest
 {
 	private BufferBasedObjectSerialiser serialiser = new BufferBasedObjectSerialiser(5120);
-	private ApplicationContext appctx;
+	private ClassPathXmlApplicationContext appctx;
 
 	@Before
 	public void init()
 	{
-		SpringContextBuilder builder = new SpringContextBuilder();
+		SpringContextBuilder builder = new SpringContextBuilderImpl();
 		builder.add("test-singly-linked-list.xml");
 		builder.add("test-repoman.xml");
 		builder.add("test-space.xml");
@@ -47,7 +48,7 @@ public class SinglyLinkedListTest
 		RepositoryManager repoman = getBean("repoman");
 		SlotFinder slotFinder = getBean("slotFinder");
 		PageDaemon daemon = getBean("pageDaemon");
-		RepositoryFile repo = getBean("repo");
+		RepositoryFile repo = getBean("singly2");
 		ApiContext apiContext = getBean("apiContext");
 		ListStorageApi api = null;
 		SandpitManager sandpitManager = repoman.getSandpitManager();
@@ -57,6 +58,7 @@ public class SinglyLinkedListTest
 			api = new ListStorageApiImpl(apiContext, repoman.getSizing(), slotFinder, 2010);
 			PersistentLinkedListModel model = sandpitManager.getLinkedList(api);
 
+			// the test assumes that the linked list in the sandpit does not already exist
 			assertTrue(model.isEmpty());
 
 			model.add(serialiser.write(new Integer(0)));

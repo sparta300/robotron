@@ -37,6 +37,14 @@
 		<constructor-arg index="0" value="${cacheSize}"/>
 	</bean>
 	
+	<!-- see unit test called SinglyLinkedListTest -->
+	<bean id="singly2" class="org.hydroid.file.RepositoryFile">
+		<constructor-arg index="0" ref="searchPath"/>
+		<constructor-arg index="1" value="singly2"/>
+		<constructor-arg index="2" value="${defaultSuffix}"/>
+		<constructor-arg index="3" value="rw"/>
+	</bean>
+	
 	<bean id="repo" class="org.hydroid.file.RepositoryFile">
 		<constructor-arg index="0" ref="searchPath"/>
 		<constructor-arg index="1" value="${defaultRepositoryName}"/>
@@ -56,6 +64,8 @@
 		<constructor-arg index="1" value="0"/>
 		<constructor-arg index="2" value="${defaultBlockSize}"/>
 	</bean>	
+	
+
 	
 	<bean id="page0-readOnly" class="org.hydroid.page.PageIdentifier">
 		<constructor-arg index="0" ref="repoReadOnly"/>

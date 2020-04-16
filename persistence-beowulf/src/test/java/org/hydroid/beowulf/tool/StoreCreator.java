@@ -113,17 +113,18 @@ public class StoreCreator
 			page = daemon.make(pageId);
 			ByteBuffer bb = page.getByteBuffer();
 
+			
 			RootBlockCreator root = new RootBlockCreator(bb, factory, locatorFactory, blockSize, slotSize);
 			root.report();
 
 		}
 		catch (PageException e)
 		{
-			fail("page exception on page-in");
+			log.error("page exception on page-in", e);
 		}
 		catch (PhysicalResourceException pre)
 		{
-			fail("i/o exception on page-in");
+			log.error("failed to create root block", pre);
 		}
 		finally
 		{
@@ -135,7 +136,7 @@ public class StoreCreator
 			}
 			catch (IOException e)
 			{
-				fail("i/o exception closing repo");
+				log.error("i/o exception closing repo");
 			}
 		}
 	}
