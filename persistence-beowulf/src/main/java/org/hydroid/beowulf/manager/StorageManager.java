@@ -23,4 +23,5 @@ public interface StorageManager {
 	List<Slot> drainFreeSlots();	
 	StorageManagerContext getContext();
 	void allocateSlot(int slotIndex, int size, int typeId);
+	Slot getSlotAt(int slotId);
 }

@@ -61,6 +61,7 @@ public class StorageManagerImpl implements StorageManager {
 		return getSlotAt(address.getStructureId());
 	}
 
+	@Override
 	public Slot getSlotAt(int slotId) {		
 		return new SlotImpl(this, blockId, slotId, buffers[slotId].dereference(), bo, fsl, slotOverheads[slotId]);
 	}
