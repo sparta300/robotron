@@ -6,8 +6,8 @@
  */
 package org.hydroid.beowulf.overlay;
 
+import static org.hydroid.beowulf.BeowulfConstants.BYTE_DEFAULT_VALUE;
 import static org.hydroid.beowulf.BeowulfConstants.RELEVANT_MASK_BIT_COUNT;
-import static org.hydroid.beowulf.BeowulfConstants.UNSET_INDEX;
 import static org.hydroid.beowulf.BeowulfConstants.UNSET_LOCATOR;
 import static org.hydroid.beowulf.BeowulfConstants.UNSET_MASK;
 import static org.hydroid.beowulf.BeowulfConstants.UNSET_OBJECT_TYPE;
@@ -22,7 +22,6 @@ import org.hydroid.beowulf.storage.LocatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbg.persist.SafeCast;
 import com.lbg.persist.pointer.IntPointer;
 import com.lbg.persist.pointer.LongPointer;
 import com.lbg.persist.pointer.UnsignedBytePointer;
@@ -60,7 +59,9 @@ public class SlotOverhead extends AbstractOverlay {
     public void reset() {
     	ByteBuffer bb = getByteBuffer();
     	start();
-        bb.put(SafeCast.fromIntToUnsignedByte(UNSET_INDEX));	// slotIndex
+		// see design decision DD-001/2020
+        bb.put(BYTE_DEFAULT_VALUE);								// slotIndex
+        
         bb.putInt(UNSET_MASK);									// mask  
         bb.putLong(UNSET_OBJECT_TYPE);							// serialised object type
         bb.putLong(UNSET_POSITION);								// position

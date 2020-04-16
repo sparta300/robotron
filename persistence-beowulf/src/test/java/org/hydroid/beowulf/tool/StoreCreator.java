@@ -1,7 +1,7 @@
 package org.hydroid.beowulf.tool;
 
 import static com.google.inject.Guice.createInjector;
-import static org.junit.Assert.fail;
+import static com.mfdev.utility.SmileyPlaces.UI_BEOWULF_RUNNER_RESOURCES;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,23 +14,22 @@ import org.hydroid.beowulf.overlay.OverlayFactory;
 import org.hydroid.beowulf.overlay.creator.RootBlockCreator;
 import org.hydroid.beowulf.storage.LocatorFactory;
 import org.hydroid.file.PhysicalResourceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Injector;
 import org.hydroid.file.RepositoryFile;
-import com.lbg.module.PageDaemonModule;
-import com.lbg.module.PropertyModule;
 import org.hydroid.page.Page;
 import org.hydroid.page.PageDaemon;
 import org.hydroid.page.PageException;
 import org.hydroid.page.PageIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Injector;
+import com.lbg.module.PropertyModule;
 
 public class StoreCreator
 {
 	private static final Logger log = LoggerFactory.getLogger(StoreCreator.class);
 	
-	private static final String PROPERTY_FILE = "src/resource/creator.properties";
+	private static final String PROPERTY_FILE = UI_BEOWULF_RUNNER_RESOURCES + "/creator.nv";
 	
 	private final PageDaemon daemon;
 	private final LocatorFactory locatorFactory;
@@ -46,23 +45,32 @@ public class StoreCreator
 	{
 		int argumentCount = args.length;
 
-		if (argumentCount != 3)
+		if (argumentCount != 4)
 		{
 			System.err.println(String.format("usage: java %s blockSize slotSize fileName", getClass().getName()));
-			throw new IllegalArgumentException();
+			return;
 		}
 
-		String blockSizeString = args[0];
-		String slotSizeString = args[1];
-		String fileName = args[2];
+		final String blockSizeString = args[0];
+		final String slotSizeString = args[1];
+		final String fileName = args[2];
+		String suffix = args[3];
+
+		if (!suffix.startsWith(".")) {
+			suffix = "." + suffix;
+		}
 		
+		int index = fileName.indexOf(suffix);
+		final String targetFile = (index == -1) ? fileName : fileName.substring(0, index);
+		
+		log.debug("will create file " + UI_BEOWULF_RUNNER_RESOURCES + "/" + targetFile + suffix);
 		int blockSize = Integer.parseInt(blockSizeString);
 		int slotSize = Integer.parseInt(slotSizeString);
 		RepositoryFile file = null;
 		
 		try
 		{
-			file = new RepositoryFile(new File("src/resource"), fileName, ".telemetry", "rw");
+			file = new RepositoryFile(new File(UI_BEOWULF_RUNNER_RESOURCES), targetFile, suffix, "rw");
 		}
 		catch (FileNotFoundException e)
 		{
@@ -81,7 +89,7 @@ public class StoreCreator
 	{
 		log.info("creating injector ...");
 		
-		final Injector injector = createInjector(new PropertyModule(PROPERTY_FILE), new PageDaemonModule());
+		final Injector injector = createInjector(new PropertyModule(PROPERTY_FILE), new StoreCreatorModule());
 		final StoreCreator launcher = injector.getInstance(StoreCreator.class);	
 		
 		try

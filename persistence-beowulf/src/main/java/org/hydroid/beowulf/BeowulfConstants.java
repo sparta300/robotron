@@ -28,6 +28,9 @@ public final class BeowulfConstants {
     
     public static final int UNSET_INDEX = -1;
     
+	// Design decision DD-001/2020
+    public static final byte BYTE_DEFAULT_VALUE = (byte)0;
+    
     /**
      * the current number of bits that are being used in the index mask
      */

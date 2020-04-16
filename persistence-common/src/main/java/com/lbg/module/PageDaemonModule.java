@@ -1,10 +1,11 @@
 package com.lbg.module;
 
-import com.google.inject.AbstractModule;
-import com.lbg.persist.daemon.EvictionAlgorithm;
-import com.lbg.persist.daemon.LruAlgorithm;
+import org.hydroid.page.EvictionAlgorithm;
+import org.hydroid.page.LruAlgorithm;
 import org.hydroid.page.PageDaemon;
 import org.hydroid.page.PageDaemonImpl;
+
+import com.google.inject.AbstractModule;
 
 /**
  * 

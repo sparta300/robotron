@@ -1,12 +1,11 @@
 package org.hydroid.beowulf.overlay;
 
-import static org.hydroid.beowulf.BeowulfConstants.UNSET_COUNT;
+import static org.hydroid.beowulf.BeowulfConstants.BYTE_DEFAULT_VALUE;
 
 import java.nio.ByteBuffer;
 
 import org.hydroid.beowulf.storage.LocatorFactory;
 
-import com.lbg.persist.SafeCast;
 import com.lbg.persist.pointer.UnsignedBytePointer;
 
 /**
@@ -39,10 +38,12 @@ public class FreeListRuntime extends AbstractOverlay {
 	
 	public void reset() {
 		ByteBuffer bb = getByteBuffer();
-		start();				
-		bb.put(SafeCast.fromIntToUnsignedByte(UNSET_COUNT));
-		bb.put(SafeCast.fromIntToUnsignedByte(UNSET_COUNT));
-		bb.put(SafeCast.fromIntToUnsignedByte(UNSET_COUNT));
+		start();	
+		
+		// see design decision DD-001/2020
+		bb.put(BYTE_DEFAULT_VALUE);
+		bb.put(BYTE_DEFAULT_VALUE);
+		bb.put(BYTE_DEFAULT_VALUE);
 	}
 	
 	public String toString() {

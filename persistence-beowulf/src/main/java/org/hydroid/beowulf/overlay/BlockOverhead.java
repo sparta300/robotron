@@ -1,7 +1,7 @@
 package org.hydroid.beowulf.overlay;
 
+import static org.hydroid.beowulf.BeowulfConstants.BYTE_DEFAULT_VALUE;
 import static org.hydroid.beowulf.BeowulfConstants.UNSET_BLOCK_ID;
-import static org.hydroid.beowulf.BeowulfConstants.UNSET_COUNT;
 import static org.hydroid.beowulf.BlockType.STORAGE_BLOCK;
 
 import java.nio.ByteBuffer;
@@ -73,9 +73,11 @@ public class BlockOverhead extends AbstractOverlay
 		start();
 		buffer.put(SafeCast.fromIntToUnsignedByte(STORAGE_BLOCK.getBlockType()));
 		buffer.putLong(UNSET_BLOCK_ID);
-		buffer.put(SafeCast.fromIntToUnsignedByte(UNSET_COUNT));
-		buffer.put(SafeCast.fromIntToUnsignedByte(UNSET_COUNT));
-		buffer.put(SafeCast.fromIntToUnsignedByte(UNSET_COUNT));
+		
+		// Design decision DD-001/2020
+		buffer.put(BYTE_DEFAULT_VALUE);
+		buffer.put(BYTE_DEFAULT_VALUE);
+		buffer.put(BYTE_DEFAULT_VALUE);
 	}
 
 	public String toString()

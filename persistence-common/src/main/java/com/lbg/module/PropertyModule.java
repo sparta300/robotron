@@ -11,8 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import com.lbg.utility.PropertyHashMap;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyHashMap;
+import com.mfdev.utility.PropertyMap;
+
 
 /**
  * a module which attempts to smooth out any differences between different runtime environments.
@@ -48,7 +49,8 @@ public class PropertyModule extends AbstractModule
 		
 		try 
 		{
-			rawProperties = new PropertyHashMap(fileName);
+			final Map<String, String> propertyFileMap = FileHelper.loadPropertyMap(fileName);
+			rawProperties = new PropertyHashMap(propertyFileMap);
 		}
 		catch (IOException e) 
 		{			
