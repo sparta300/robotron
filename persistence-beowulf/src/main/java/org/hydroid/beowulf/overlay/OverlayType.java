@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum OverlayType {
-	MAGIC("ma"), SIZING("sz"), REPOSITORY_OVERHEAD("ro"), BLOCK_HEADER("bh"), GENERAL_STORAGE("st"), SANDPIT("sp");
+	MAGIC("ma"), 
+	SIZING("sz"), 
+	REPOSITORY_OVERHEAD("ro"), 
+	BLOCK_HEADER("bh"), 
+	GENERAL_STORAGE("st"), 
+	SANDPIT("sp");
 	
 	private OverlayType(String code) {
 		this.code = code;

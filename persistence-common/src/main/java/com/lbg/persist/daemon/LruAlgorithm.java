@@ -15,7 +15,7 @@ import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * A cache algorithm which will select the least recently used cache entry for
@@ -34,7 +34,7 @@ public class LruAlgorithm implements EvictionAlgorithm
 	@Inject
 	public LruAlgorithm(PropertyMap props, Provider<PageEntry> pageFactory)
 	{
-		this.pageLimit = props.getInteger("page.limit");
+		this.pageLimit = props.getInteger("page.limit").get();
 		this.entryFactory = pageFactory;
 		
 		entries = new ArrayList<PageEntry>(pageLimit);

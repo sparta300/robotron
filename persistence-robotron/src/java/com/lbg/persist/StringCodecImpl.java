@@ -9,7 +9,7 @@ import java.nio.charset.CharsetEncoder;
 
 import javax.inject.Inject;
 
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * a codec for strings.
@@ -27,7 +27,7 @@ public class StringCodecImpl implements StringCodec
 	@Inject
 	private StringCodecImpl(PropertyMap props)
 	{
-		characterSet = Charset.forName(props.getString("string.character.set"));
+		characterSet = Charset.forName(props.getString("string.character.set").get());
 		encoder = characterSet.newEncoder();
 		decoder = characterSet.newDecoder();
 	}

@@ -15,7 +15,8 @@ import com.lbg.persist.PersistenceException;
 import com.lbg.persist.daemon.ScratchBuffer;
 import com.lbg.persist.main.Calculator;
 import com.lbg.persist.structure.header.StringData;
-import com.lbg.utility.PropertyHashMap;
+import com.mfdev.utility.PropertyHashMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * helps to plan the structure of a block.
@@ -101,7 +102,7 @@ public class BlockPlanner
 		// no point in calculating the size of strings, they will all be different lengths
 		if (type == STRING_DATA)
 		{
-			return writeString(parameters.getString("string.data"));
+			return writeString(parameters.getString("string.data").get());
 		}
 		
 		final Integer lookUp = sizeMap.get(type);

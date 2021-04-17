@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lbg.utility.DateTimeFactory;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * a basic frame generator implementation.
@@ -39,8 +39,8 @@ public class ExecutorBasedFrameGenerator implements FrameGenerator
 	{		
 		this.clock = clock;
 		executor = Executors.newScheduledThreadPool(1);		
-		final int period = props.getInteger("frame.generator.period");
-		final String timeUnitString = props.getString("frame.generator.period.unit");
+		final int period = props.getInteger("frame.generator.period").get();
+		final String timeUnitString = props.getString("frame.generator.period.unit").get();
 		final TimeUnit timeUnit = TimeUnit.valueOf(timeUnitString.toUpperCase());
 		startUtcTimeStamp = clock.nowMillis();
 		startNanos = clock.nowNanos();

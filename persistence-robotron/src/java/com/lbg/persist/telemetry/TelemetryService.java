@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.lbg.persist.engine.service.Service;
 import com.lbg.persist.engine.service.ServiceException;
 import com.lbg.utility.DateTimeFactory;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * an implementation of the {@link Service} interface that implements a telemetry stream service.

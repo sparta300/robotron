@@ -2,6 +2,8 @@ package org.hydroid.beowulf.overlay;
 
 import java.nio.ByteBuffer;
 
+import org.hydroid.beowulf.storage.LocatorFactory;
+
 public interface Overlay
 {
 	long getStart();

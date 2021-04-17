@@ -14,16 +14,16 @@ import javax.inject.Named;
 import javax.inject.Provider;
 
 import org.hydroid.file.PhysicalResourceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.hydroid.file.RepositoryFile;
-import com.lbg.persist.Address;
-import com.lbg.persist.PersistConstants;
-import com.lbg.persist.PersistenceException;
 import org.hydroid.page.Page;
 import org.hydroid.page.PageDaemon;
 import org.hydroid.page.PageIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.lbg.persist.Address;
+import com.lbg.persist.PersistConstants;
+import com.lbg.persist.PersistenceException;
 import com.lbg.persist.engine.service.Service;
 import com.lbg.persist.engine.service.ServiceException;
 import com.lbg.persist.engine.service.ServiceRegistry;
@@ -35,10 +35,10 @@ import com.lbg.persist.structure.raw.BlockMain;
 import com.lbg.persist.structure.raw.Geometry;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.utility.PropertyMap;
 import com.lbg.utility.json.JsonArray;
 import com.lbg.utility.json.JsonObject;
 import com.lbg.utility.json.JsonValue;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * an implementation of a engine, which preloads and pins the root block.
@@ -71,7 +71,7 @@ public class RobotronEngine implements Engine
 		this.reader = reader;
 		this.pageDaemon = pageDaemon;
 		this.serviceRegistry = serviceRegistry;
-		this.peekSize = properties.getInteger("file.peek.size");
+		this.peekSize = properties.getInteger("file.peek.size").get();
 		this.properties = properties;
 		this.tlbProvider = tlbProvider;
 		

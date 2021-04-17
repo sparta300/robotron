@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import com.lbg.persist.PersistenceException;
 import com.lbg.persist.Swizzler;
 import com.lbg.persist.structure.raw.Header;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 public interface HeaderStructureCommand
 {

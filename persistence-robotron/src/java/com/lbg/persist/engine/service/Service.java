@@ -1,6 +1,6 @@
 package com.lbg.persist.engine.service;
 
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * a very basic interface for controlling repository services.

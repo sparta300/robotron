@@ -12,15 +12,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.hydroid.file.FileMode;
 import org.hydroid.file.PhysicalResourceException;
 import org.hydroid.file.RepositoryFile;
-import org.hydroid.file.FileMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.lbg.persist.SafeCast;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 
 /**
@@ -42,7 +41,7 @@ public class PageDaemonImpl implements PageDaemon
 	public PageDaemonImpl(EvictionAlgorithm algorithm, PropertyMap props)
 	{
 		this.algorithm = algorithm;
-		this.pageLimit = props.getInteger("page.limit");
+		this.pageLimit = props.getInteger("page.limit").get();
 
 		pages = new ArrayList<Page>(pageLimit);
 		lookUp = new HashMap<Long, Page>(pageLimit);

@@ -11,7 +11,7 @@ import com.lbg.persist.PersistenceException;
 import com.lbg.persist.SafeCast;
 import com.lbg.persist.Swizzler;
 import com.lbg.persist.structure.raw.Header;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * a factory for creating data structures.

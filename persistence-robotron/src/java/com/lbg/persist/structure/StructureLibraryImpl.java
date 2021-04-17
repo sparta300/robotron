@@ -48,8 +48,8 @@ import com.lbg.persist.structure.raw.Header;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.StoreMain;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.utility.PropertyHashMap;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyHashMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * an implementation of a library of known structures.
@@ -170,7 +170,7 @@ public class StructureLibraryImpl implements StructureLibrary
 			@Override
 			public Structure createWithHeader(ByteBuffer bb, PropertyMap parameters)
 			{
-				final int space = parameters.getInteger("wilderness.space");
+				final int space = parameters.getInteger("wilderness.space").get();
 				final Header header = Header.forge(bb);
 				header.setType(SafeCast.fromIntToShort(WILDERNESS.getId()));
 				header.setElementCount(SHORT_1);
@@ -200,7 +200,7 @@ public class StructureLibraryImpl implements StructureLibrary
 			@Override
 			public Structure createWithHeader(ByteBuffer bb, PropertyMap parameters)
 			{
-				final int elementCount = parameters.getInteger("element.count");
+				final int elementCount = parameters.getInteger("element.count").get();
 				final Header header = Header.forge(bb);
 				final int start = bb.position();
 				header.setType(SafeCast.fromIntToShort(LIST_BOOLEAN_8.getId()));
@@ -222,7 +222,7 @@ public class StructureLibraryImpl implements StructureLibrary
 			@Override
 			public Structure createWithHeader(ByteBuffer bb, PropertyMap parameters)
 			{
-				final int elementCount = parameters.getInteger("element.count");
+				final int elementCount = parameters.getInteger("element.count").get();
 				final Header header = Header.forge(bb);
 				header.setType(SafeCast.fromIntToShort(LIST_DOUBLE.getId()));
 				header.setElementCount(SafeCast.fromIntToShort(elementCount));
@@ -245,7 +245,7 @@ public class StructureLibraryImpl implements StructureLibrary
 			@Override
 			public Structure createWithHeader(ByteBuffer bb, PropertyMap parameters)
 			{
-				final int elementCount = parameters.getInteger("element.count");
+				final int elementCount = parameters.getInteger("element.count").get();
 				final Header header = Header.forge(bb);
 				header.setType(SafeCast.fromIntToShort(LIST_INTEGER.getId()));
 				header.setElementCount(SafeCast.fromIntToShort(elementCount));
@@ -291,7 +291,7 @@ public class StructureLibraryImpl implements StructureLibrary
 			@Override
 			public Structure createWithHeader(ByteBuffer bb, PropertyMap parameters)
 			{
-				final int elementCount = parameters.getInteger("element.count");
+				final int elementCount = parameters.getInteger("element.count").get();
 				final Header header = Header.forge(bb);
 				header.setType(SafeCast.fromIntToShort(LIST_TELEMETRY_FRAME.getId()));
 				header.setElementCount(SafeCast.fromIntToShort(elementCount));
@@ -354,7 +354,7 @@ public class StructureLibraryImpl implements StructureLibrary
 				header.setType(SafeCast.fromIntToShort(STRING_DATA.getId()));
 				header.setElementCount(SHORT_1);
 				final int pos = bb.position();
-				final String data = parameters.getString("string.data");
+				final String data = parameters.getString("string.data").get();
 				bb.put(codec.encode(data));
 				final int length = bb.position() - pos;
 				header.setDataSize(SafeCast.fromIntToShort(length));
@@ -373,7 +373,7 @@ public class StructureLibraryImpl implements StructureLibrary
 			@Override
 			public Structure createWithHeader(ByteBuffer bb, PropertyMap parameters)
 			{
-				final int elementCount = parameters.getInteger("element.count");
+				final int elementCount = parameters.getInteger("element.count").get();
 				final Header header = Header.forge(bb);
 				header.setType(SafeCast.fromIntToShort(COUNT_16.getId()));
 				header.setElementCount(SHORT_1);
@@ -397,9 +397,9 @@ public class StructureLibraryImpl implements StructureLibrary
 	@Override
 	public Structure createList16(ByteBuffer bb, PropertyMap parameters) throws PersistenceException
 	{
-		final int elementCount = parameters.getInteger("element.count");
-		final StructureType managementType = StructureType.valueOf(parameters.getString("management.type"));
-		final StructureType elementType = StructureType.valueOf(parameters.getString("element.type"));
+		final int elementCount = parameters.getInteger("element.count").get();
+		final StructureType managementType = StructureType.valueOf(parameters.getString("management.type").get());
+		final StructureType elementType = StructureType.valueOf(parameters.getString("element.type").get());
 		return createList16(bb, elementCount, managementType, elementType, parameters);
 	}
 

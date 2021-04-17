@@ -127,4 +127,8 @@ abstract public class AbstractOverlay implements Overlay
 			sb.append(SPACE);
 		}
 	}
+	
+	final protected LocatorFactory getLocatorFactory() {
+		return locatorFactory;
+	}
 }

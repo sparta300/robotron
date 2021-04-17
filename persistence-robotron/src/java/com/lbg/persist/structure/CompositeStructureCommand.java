@@ -3,7 +3,7 @@ package com.lbg.persist.structure;
 import java.nio.ByteBuffer;
 
 import com.lbg.persist.Swizzler;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 /**
  * command for creating a composite structure.

@@ -39,7 +39,7 @@ import com.lbg.persist.structure.raw.Geometry;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.StoreMain;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 import com.mfdev.utility.SafeCast;
 
 /**
@@ -72,7 +72,7 @@ public class TranslationLookasideBufferImpl implements TranslationLookasideBuffe
 		this.swizzler = swizzler;
 		this.blockReader = blockReader;
 		this.structureReader = structureReader;
-		executor = Executors.newFixedThreadPool(props.getInteger("tlb.pool.size"));
+		executor = Executors.newFixedThreadPool(props.getInteger("tlb.pool.size").get());
 	}
 
 	@Override

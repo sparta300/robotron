@@ -17,7 +17,7 @@ import org.junit.Test;
 import com.google.inject.Injector;
 import com.lbg.module.PageDaemonModule;
 import com.lbg.module.PropertyModule;
-import com.lbg.utility.PropertyMap;
+import com.mfdev.utility.PropertyMap;
 
 public class RepositoryFileTest
 {
@@ -54,8 +54,8 @@ public class RepositoryFileTest
 		final Injector injector = getInjector();
 		final PageDaemon daemon = injector.getInstance(PageDaemon.class);
 		final PropertyMap props = injector.getInstance(PropertyMap.class);
-		final int blockSize = props.getInteger("block.size");
-		final String fileSuffix = props.getString("file.suffix");
+		final int blockSize = props.getInteger("block.size").get();
+		final String fileSuffix = props.getString("file.suffix").get();
 		
 		final DirectoryList searchPath = new DirectoryList(Arrays.asList(new String[] { RESOURCE_DIRECTORY }));
 		final RepositoryFile file = new RepositoryFile(searchPath, FILE_NAME, fileSuffix, "r");
