@@ -17,8 +17,8 @@ import com.lbg.persist.telemetry.FrameGenerator;
 import com.lbg.persist.telemetry.FrameSink;
 import com.lbg.persist.telemetry.FrameSinkImpl;
 import com.lbg.persist.telemetry.TelemetryService;
-import com.lbg.utility.DateTimeFactory;
-import com.lbg.utility.DateTimeFactoryImpl;
+import com.mfdev.utility.calendar.DateTimeFactory;
+import com.mfdev.utility.calendar.DateTimeFactoryImpl;
 
 public class TelemetryModule extends AbstractModule
 {

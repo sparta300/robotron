@@ -12,7 +12,7 @@ import com.lbg.persist.Unset;
 import com.lbg.persist.pointer.BytePointer;
 import com.lbg.persist.pointer.ShortPointer;
 import com.lbg.persist.structure.raw.Header;
-import com.lbg.utility.TimeHelper;
+import com.mfdev.utility.calendar.TimeHelper;
 
 /**
  * a telemetry time code inspired by the IRIG J-2 standard.
