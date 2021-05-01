@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.lbg.persist.PersistConstants;
 import com.lbg.persist.pointer.IntPointer;
 import com.lbg.persist.structure.AbstractStructure;
-import com.lbg.utility.BaseUtils;
+import com.mfdev.utility.BaseUtils;
 
 /**
  * a magic number to help operating systems identify this file type.

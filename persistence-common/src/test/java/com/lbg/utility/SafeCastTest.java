@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.lbg.persist.SafeCast;
 import com.lbg.persist.UnsignedByte;
+import com.mfdev.utility.BaseUtils;
 
 public class SafeCastTest
 {
