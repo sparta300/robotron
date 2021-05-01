@@ -12,7 +12,7 @@ import com.mfdev.utility.Characters;
  */
 public class ImmutableDate implements Comparable<ImmutableDate>
 {
-	private static final char DEFAULT_SEPARATOR = '/';
+	private static final char DEFAULT_SEPARATOR = Characters.FORWARD_SLASH;
 	
 	private final int day;
 	private final int month;
@@ -425,17 +425,6 @@ public class ImmutableDate implements Comparable<ImmutableDate>
 		sb.append(separatorChar);
 		sb.append(yy);
 		return sb.toString();
-	}
-	
-	/**
-	 * convert this date to the <code>DD-Mmm-YY</code> long date format used in the DMO CSV files.
-	 * For example 25-Dec-99 is christmas day 1999. 
-	 * 
-	 * @return the date string 
-	 */
-	public String toDmoLongDate()
-	{
-		return toDdMmmYyString(Characters.MINUS);
 	}
 	
 	/**
