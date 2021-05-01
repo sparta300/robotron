@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	 
+	<bean id="chain" class="org.hydroid.beowulf.space.ResponsibilityChain">
+		<constructor-arg index="0">
+			<util:list>
+				<ref bean="sniffer"/>				
+				<ref bean="scavenger"/>
+				<ref bean="creator"/>
+			</util:list>
+		</constructor-arg>
+	</bean>	 
+	 
+	 <bean id="sniffer" class="org.hydroid.beowulf.space.ExistingSpaceHandler">
+	 	<constructor-arg index="0" ref="spaceManager"/>
+	 </bean>
+	
+	 <bean id="creator" class="org.hydroid.beowulf.space.NewSpaceHandler">
+	 	<constructor-arg index="0" ref="spaceManager"/>
+	 	<constructor-arg index="1" value="${minimumBlockIncrement}"/>
+	 	<constructor-arg index="2" ref="scavenger"/>
+	 </bean>	
+	 
+	 <bean id="scavenger" class="org.hydroid.beowulf.space.Scavenger">
+	 </bean>	 
+
+	 <bean id="spaceManager" class="org.hydroid.beowulf.space.BeowulfSpaceManager">
+	 </bean>
+	 
+	<bean id="spaceManagementContext" class="org.hydroid.beowulf.space.SpaceManagementContextImpl">
+		<constructor-arg index="0" ref="spaceManager"/>
+		<constructor-arg index="1" ref="chain"/>
+		<constructor-arg index="2" ref="locatorFactory"/>
+	</bean> 
+	
+</beans>	
