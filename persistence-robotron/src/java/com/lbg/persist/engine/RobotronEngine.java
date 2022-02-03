@@ -35,10 +35,10 @@ import com.lbg.persist.structure.raw.BlockMain;
 import com.lbg.persist.structure.raw.Geometry;
 import com.lbg.persist.structure.raw.Magic;
 import com.lbg.persist.structure.raw.VersionNumber;
-import com.lbg.utility.json.JsonArray;
-import com.lbg.utility.json.JsonObject;
-import com.lbg.utility.json.JsonValue;
 import com.mfdev.utility.PropertyMap;
+import com.mfdev.utility.json.JsonArray;
+import com.mfdev.utility.json.JsonObject;
+import com.mfdev.utility.json.JsonValue;
 
 /**
  * an implementation of a engine, which preloads and pins the root block.
@@ -126,7 +126,7 @@ public class RobotronEngine implements Engine
 		final int blockSize = geometry.getBlockSize();
 		
 		// load in and pin the first (root) page
-		final PageIdentifier page0ID = new PageIdentifier(file, ROOT_BLOCK_ID, blockSize);
+		final PageIdentifier page0ID = PageIdentifier.forBlock(file, ROOT_BLOCK_ID, blockSize);
 		final Page page0  = pageDaemon.pageIn(page0ID);
 		pageDaemon.pin(page0);
 

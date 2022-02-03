@@ -78,7 +78,7 @@ public class StoreCreator
 			return;
 		}
 		
-		final PageIdentifier page0 = new PageIdentifier(file, 0, blockSize);
+		final PageIdentifier page0 = PageIdentifier.forRootBlock(file, blockSize);
 		final OverlayFactory forge  = new OverlayFactory(true, locatorFactory);
 		final StoreCreatorContext context = new StoreCreatorContext(daemon, file, page0, forge, locatorFactory, blockSize, slotSize);
 

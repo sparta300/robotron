@@ -13,5 +13,4 @@ public class StoreCreatorModule extends AbstractModule {
 		bind(LocatorFactory.class).toInstance(new Block56Slot4Subslot4());
 		install(new PageDaemonModule());
 	}
-
 }

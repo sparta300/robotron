@@ -61,7 +61,7 @@ public class ExampleFileCreator implements FileCreator
 	@Override
 	public void createFile(RepositoryFile file, int blockSize,	int maxBlockCount) throws PersistenceException
 	{
-		final PageIdentifier pageId = new PageIdentifier(file, 0, blockSize);
+		final PageIdentifier pageId = PageIdentifier.forRootBlock(file, blockSize);
 
 		try
 		{

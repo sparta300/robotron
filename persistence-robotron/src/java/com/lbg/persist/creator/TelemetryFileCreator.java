@@ -52,7 +52,7 @@ public class TelemetryFileCreator implements FileCreator
 	@Override
 	public void createFile(RepositoryFile file, int blockSize,	int maxBlockCount) throws PersistenceException
 	{
-		final PageIdentifier pageId = new PageIdentifier(file, 0L, blockSize);
+		final PageIdentifier pageId = PageIdentifier.forRootBlock(file, blockSize);
 
 		try
 		{

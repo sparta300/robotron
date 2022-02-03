@@ -157,10 +157,10 @@ public class LocationManager implements LocationManagerApi {
 		}
 		
 		MetaData metadata = new MetaData(bb, locatorFactory);
-		logger.debug(metadata.toString());
+		log.debug(metadata.toString());
 		
 		Sizing sz = new Sizing(bb, locatorFactory);
-		PageIdentifier rootPageId = new PageIdentifier(repoFile, 0, sz.getBlockSize());
+		PageIdentifier rootPageId = PageIdentifier.forRootBlock(repoFile, sz.getBlockSize());
 		SpaceManagementContext spaceManagementContext = spaceManagementContextFactory.make();
 		  		
 		return new BeowulfRepositoryManager(pageDaemon, repoFile, rootPageId, spaceManagementContext);
@@ -188,5 +188,5 @@ public class LocationManager implements LocationManagerApi {
 	private final PageDaemon pageDaemon;
 	private final Directory directory;
 	
-	private static final Logger logger = LoggerFactory.getLogger(LocationManager.class);
+	private static final Logger log = LoggerFactory.getLogger(LocationManager.class);
 }

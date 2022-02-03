@@ -75,7 +75,7 @@ public class RepositoryReader {
 	}
 	
 	private void readAll(PageDaemon daemon, RepositoryFile repo) throws PhysicalResourceException {		
-		PageIdentifier rootPageId = new PageIdentifier(repo, 0, BLOCK_SIZE);
+		PageIdentifier rootPageId = PageIdentifier.forRootBlock(repo, BLOCK_SIZE);
 		Page rootPage = daemon.pageIn(rootPageId);
 		daemon.pin(rootPage);
 		RootBlock b0 = new RootBlock(rootPage.getByteBuffer(), reader, locatorFactory);
@@ -96,7 +96,7 @@ public class RepositoryReader {
 				
 		for (long b = 1; b < nextBlockId; b++) {
 			System.out.println(String.format("fetch(b%d)", b));
-			PageIdentifier id = new PageIdentifier(repo, b * BLOCK_SIZE, BLOCK_SIZE);
+			PageIdentifier id = PageIdentifier.forBlock(repo, b, BLOCK_SIZE);
 			Page blockPage = daemon.fetch(id);
 			StorageBlock block = new StorageBlock(blockPage.getByteBuffer(), reader, locatorFactory, sz);
 			
@@ -110,7 +110,6 @@ public class RepositoryReader {
 					                                        locatorFactory);
 			
 			report(manager);
-		
 		}
 		
 

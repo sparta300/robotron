@@ -143,7 +143,7 @@ public class TranslationLookasideBufferImpl implements TranslationLookasideBuffe
 				
 		// cache miss
 		log.debug("loading component b" + blockId + "s" + componentId);
-		final PageIdentifier pageId = new PageIdentifier(holder.getFile(), blockId * 1L, holder.getBlockSize());
+		final PageIdentifier pageId = PageIdentifier.forBlock(holder.getFile(), blockId, holder.getBlockSize());
 		final Page page = pageDaemon.fetch(pageId);
 		final ByteBuffer pageByteBuffer = page.getByteBuffer();
 		

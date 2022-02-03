@@ -52,7 +52,7 @@ public class OverlayTest {
 		PageDaemon daemon = getBean("pageDaemon");
 		RepositoryFile repo = getBean("repo");
 		
-		PageIdentifier pageId = new PageIdentifier(repo, 0, 1024);
+		PageIdentifier pageId = PageIdentifier.forRootBlock(repo, 1024);
 		
 		try {
 			daemon.pageIn(pageId);
@@ -76,7 +76,7 @@ public class OverlayTest {
 		int slotSize = 128;
 		PageDaemon daemon = getBean("pageDaemon");
 		RepositoryFile repo = getBean("repo");
-		PageIdentifier pageId = new PageIdentifier(repo, 0, blockSize);
+		PageIdentifier pageId = PageIdentifier.forRootBlock(repo, blockSize);
 		OverlayFactory factory = new OverlayFactory(true, locatorFactory);
 		Page page = null;
 		
@@ -131,7 +131,7 @@ public class OverlayTest {
 			
 			Sizing sz = root.getSizing();
 			
-			PageIdentifier pageId1 = new PageIdentifier(repo, 1024, blockSize);
+			PageIdentifier pageId1 = PageIdentifier.forBlock(repo, 1L, blockSize);
 			Page page1 = daemon.make(pageId1);
 			ByteBuffer b1 = page1.getByteBuffer();
 			StorageBlockCreator storageBlock = new StorageBlockCreator(1, b1, factory, locatorFactory, sz);
@@ -161,7 +161,7 @@ public class OverlayTest {
 		int slotSize = 128;
 		PageDaemon daemon = getBean("pageDaemon");
 		RepositoryFile repo = getBean("repo");
-		PageIdentifier pageId = new PageIdentifier(repo, 0, blockSize);
+		PageIdentifier pageId = PageIdentifier.forRootBlock(repo, blockSize);
 		OverlayFactory factory = new OverlayFactory(true, locatorFactory);
 		Page page = null;
 		
@@ -195,7 +195,7 @@ public class OverlayTest {
 		int blockSize = 1024;
 		PageDaemon daemon = getBean("pageDaemon");
 		RepositoryFile repo = getBean("repo");
-		PageIdentifier pageId = new PageIdentifier(repo, 0, blockSize);
+		PageIdentifier pageId = PageIdentifier.forRootBlock(repo, blockSize);
 		OverlayFactory factory = new OverlayFactory(false, locatorFactory);
 		Page page = null;
 		
@@ -231,7 +231,7 @@ public class OverlayTest {
 		int blockSize = 1024;		
 		PageDaemon daemon = getBean("pageDaemon");
 		RepositoryFile repo = getBean("repo");
-		PageIdentifier pageId = new PageIdentifier(repo, 0, blockSize);
+		PageIdentifier pageId = PageIdentifier.forRootBlock(repo, blockSize);
 		new OverlayFactory(false, locatorFactory);
 		Page page = null;
 		
@@ -306,7 +306,7 @@ public class OverlayTest {
 		
 		BlockOverhead bo = root.getBlockOverhead();
 		assertEquals(12, bo.size());
-		assertEquals(1, bo.getBlockType().getBlockType());
+		assertEquals(1, bo.getBlockType().blockType());
 		assertEquals(0, bo.getBlockId());
 		assertEquals(4, bo.getFree());
 		assertEquals(0, bo.getUsed());

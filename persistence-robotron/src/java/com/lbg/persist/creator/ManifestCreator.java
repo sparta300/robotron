@@ -94,7 +94,7 @@ public class ManifestCreator implements FileCreator
 
 	private void writeRootBlock(RepositoryFile file, int blockSize, int maxBlockCount) throws PhysicalResourceException, PersistenceException
 	{
-		final PageIdentifier pageId = new PageIdentifier(file, 0, blockSize);
+		final PageIdentifier pageId = PageIdentifier.forRootBlock(file, blockSize);
 		final Page page = pageDaemon.make(pageId);
 		final ByteBuffer bb = page.getByteBuffer();
 		
@@ -162,7 +162,7 @@ public class ManifestCreator implements FileCreator
 		// spin through all of the remaining blocks and fill them with wilderness
 		for (int b = 1; b < maxBlockCount; b++)
 		{
-			final PageIdentifier pageId = new PageIdentifier(file, blockSize * 1L, b);
+			final PageIdentifier pageId = PageIdentifier.forBlock(file, b, blockSize);
 			final Page page = pageDaemon.make(pageId);
 			final ByteBuffer pageByteBuffer = page.getByteBuffer();
 			final BlockPlanner planner = new BlockPlanner(structureLibrary, structureFactory, scratch, pageByteBuffer, blockSize);

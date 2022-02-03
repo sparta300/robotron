@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.lbg.utility.json.JsonArray;
-import com.lbg.utility.json.JsonObject;
-import com.lbg.utility.json.JsonValue;
+import com.mfdev.utility.json.JsonArray;
+import com.mfdev.utility.json.JsonObject;
+import com.mfdev.utility.json.JsonValue;
 
 /**
  * a builder for the repository manifest.
