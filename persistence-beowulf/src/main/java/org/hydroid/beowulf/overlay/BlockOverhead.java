@@ -71,7 +71,7 @@ public class BlockOverhead extends AbstractOverlay
 	{
 		ByteBuffer buffer = getByteBuffer();
 		start();
-		buffer.put(SafeCast.fromIntToUnsignedByte(STORAGE_BLOCK.getBlockType()));
+		buffer.put(SafeCast.fromIntToUnsignedByte(STORAGE_BLOCK.blockType()));
 		buffer.putLong(UNSET_BLOCK_ID);
 		
 		// Design decision DD-001/2020
