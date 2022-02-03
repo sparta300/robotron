@@ -2,6 +2,7 @@ package org.hydroid.beowulf;
 
 import org.hydroid.beowulf.manager.SandpitManager;
 import org.hydroid.beowulf.manager.StorageManager;
+import org.hydroid.beowulf.overlay.MetaData;
 import org.hydroid.beowulf.overlay.RepositoryOverhead;
 import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.space.SpaceManagementContext;
@@ -36,4 +37,6 @@ public interface RepositoryManager {
 	SpaceManagementContext getSpaceManagementContext();
 	
 	RepositoryOverhead getRepositoryOverhead();
+	
+	MetaData getMetaData();
 }

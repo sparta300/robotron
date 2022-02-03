@@ -1,3 +1,10 @@
+/**
+
+ * File		: $Source:$
+ * Author	: $Author:$
+ * Revision	: $Revision:$
+ * Date 	: $Date:$
+ */
 package org.hydroid.beowulf.overlay;
 
 import static org.hydroid.beowulf.BeowulfConstants.BYTE_DEFAULT_VALUE;

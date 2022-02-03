@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.hydroid.beowulf.storage.LocatorFactory;
 
-
 public class CompositeOverlay extends AbstractOverlay
 {
 	private static final String EOL = System.getProperty("line.separator");
