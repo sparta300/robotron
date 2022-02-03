@@ -20,8 +20,9 @@ public enum BlockType
 
 	static
 	{
-		map.put(ROOT_BLOCK.getBlockType(), ROOT_BLOCK);
-		map.put(STORAGE_BLOCK.getBlockType(), STORAGE_BLOCK);
+		map.put(ROOT_BLOCK.blockType, ROOT_BLOCK);
+		map.put(STORAGE_BLOCK.blockType, STORAGE_BLOCK);
+		map.put(WILDERNESS_BLOCK.blockType, WILDERNESS_BLOCK);
 	}
 
 	private BlockType(int blockType, String description)
@@ -30,6 +31,7 @@ public enum BlockType
 		this.description = description;
 	}
 
+	@Override
 	public String toString()
 	{
 		return this.description;
@@ -40,10 +42,8 @@ public enum BlockType
 		return fromInt(blockType).toString();
 	}
 
-	public int getBlockType()
-	{
-		return this.blockType;
-	}
+	public int blockType() { return this.blockType; }
+	public String description() { return this.description; }
 
 	public static BlockType fromInt(int blockType)
 	{
