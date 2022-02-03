@@ -119,6 +119,25 @@ public class OverlayFactory {
 		return (T) command.execute(ctx);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T extends Overlay> T make(int componentId, ByteBuffer bb) {
+		StoreComponent component = StoreComponent.forId(componentId);
+		
+		if (component == null) {
+			throw new IllegalArgumentException(String.format("unknown store component ID '%d'", componentId));
+		}
+		
+		String key = component.key();
+		Command command = map.get(key);
+				
+		if (command == null) {
+			throw new IllegalArgumentException(String.format("unknown store component key '%s'", key));
+		}
+		
+		CommandContext ctx = new CommandContext(bb);
+		return (T) command.execute(ctx);
+	}
+	
 	public boolean isCreator() { return isCreator ; }
 	
 	private final boolean isCreator;
