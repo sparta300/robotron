@@ -42,34 +42,7 @@ public class StoreReader {
 		this.locatorFactory = locatorFactory;
 	}
 
-	private void create(String[] args) throws PhysicalResourceException {
-		int argumentCount = args.length;
-
-		if (argumentCount != 2) {
-			System.err.println(String.format("usage: java %s storeFileName storeFileSuffix", getClass().getName()));
-			return;
-		}
-
-		String fileName = args[0];
-		String suffix = args[1];
-
-		if (!suffix.startsWith(".")) {
-			suffix = "." + suffix;
-		}
-
-		int index = fileName.indexOf(suffix);
-		final String targetFile = (index == -1) ? fileName : fileName.substring(0, index);
-
-		log.debug("will read file " + UI_BEOWULF_RUNNER_RESOURCES + "/" + targetFile + suffix);
-		RepositoryFile repoFile = null;
-
-		try {
-			repoFile = new RepositoryFile(new File(UI_BEOWULF_RUNNER_RESOURCES), targetFile, suffix, FileMode.READ_ONLY.symbol());
-		} catch (FileNotFoundException e) {
-			log.error("could not open the repository file", e);
-			return;
-		}
-
+	private void read(RepositoryFile repoFile) throws PhysicalResourceException {
 		log.debug("file opened successfully");
 		ByteBuffer bb = null;
 		
@@ -85,7 +58,6 @@ public class StoreReader {
 		Sizing sizing = new Sizing(bb, locatorFactory);
 		read(repoFile, metadata, sizing);
 	}
-
 
 	private void read(RepositoryFile repoFile, MetaData metadata, Sizing sizing) {
 		int blockSize = sizing.getBlockSize();
@@ -128,13 +100,39 @@ public class StoreReader {
 	}
 	
 	public static void main(String[] args) {
-		log.info("creating injector ...");
+		int argumentCount = args.length;
+
+		if (argumentCount != 2) {
+			System.err.println(String.format("usage: java %s storeFileName storeFileSuffix", StoreReader.class.getName()));
+			return;
+		}
+
+		String fileName = args[0];
+		String suffix = args[1];
+
+		if (!suffix.startsWith(".")) {
+			suffix = "." + suffix;
+		}
+
+		int index = fileName.indexOf(suffix);
+		final String targetFile = (index == -1) ? fileName : fileName.substring(0, index);
+
+		RepositoryFile repoFile = null;
+
+		try {
+			repoFile = new RepositoryFile(new File(UI_BEOWULF_RUNNER_RESOURCES), targetFile, suffix, FileMode.READ_ONLY.symbol());
+		} catch (FileNotFoundException e) {
+			log.error("could not open the repository file", e);
+			return;
+		}
+		
+		log.debug("will read file " + UI_BEOWULF_RUNNER_RESOURCES + "/" + targetFile + suffix);
 
 		final Injector injector = createInjector(new PropertyModule(PROPERTY_FILE), new StoreReaderModule());
 		final StoreReader launcher = injector.getInstance(StoreReader.class);
-
+		
 		try {
-			launcher.create(args);
+			launcher.read(repoFile);
 		} catch (Exception e) {
 			log.error("launch exception", e);
 		}

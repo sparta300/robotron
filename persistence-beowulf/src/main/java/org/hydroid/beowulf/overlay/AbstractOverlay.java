@@ -102,8 +102,7 @@ abstract public class AbstractOverlay implements Overlay
 		}
 	}
 
-	protected void appendPointer(StringBuilder sb, String name,
-			LongPointer pointer, boolean spaceBefore, boolean spaceAfter)
+	protected void appendPointer(StringBuilder sb, String name,	LongPointer pointer, boolean spaceBefore, boolean spaceAfter)
 	{
 		if (spaceBefore)
 		{

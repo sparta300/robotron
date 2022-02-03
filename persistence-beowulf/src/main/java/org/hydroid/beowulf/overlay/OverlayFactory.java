@@ -1,12 +1,16 @@
 package org.hydroid.beowulf.overlay;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListHead;
 import org.hydroid.beowulf.model.list.overlay.SinglyLinkedListSegment;
 import org.hydroid.beowulf.storage.LocatorFactory;
+
+import com.mfdev.utility.ProgrammingError;
 
 public class OverlayFactory {
 	public OverlayFactory(final boolean create, final LocatorFactory locatorFactory){
@@ -136,6 +140,22 @@ public class OverlayFactory {
 		
 		CommandContext ctx = new CommandContext(bb);
 		return (T) command.execute(ctx);
+	}
+	
+	public List<Overlay> makeAll(List<String> componentKeys, ByteBuffer bb) {
+		List<Overlay> overlayList = new ArrayList<Overlay>(componentKeys.size());
+		
+		for (String componentKey : componentKeys) {
+			StoreComponent component = StoreComponent.forKey(componentKey);
+			
+			if (component == null) {
+				throw new ProgrammingError("failed to find component name " + componentKey + ", make sure there is an enum value");
+			}
+			
+			overlayList.add(make(component.id(), bb));
+		}
+		
+		return overlayList;
 	}
 	
 	public boolean isCreator() { return isCreator ; }

@@ -20,20 +20,14 @@ public enum StoreComponent {
 	private final int id;
 	private final String key;
 	private final String stringified;
-	private static final Map<Integer, StoreComponent> lookUp = new HashMap<Integer, StoreComponent>();
+	private static final Map<Integer, StoreComponent> byId = new HashMap<Integer, StoreComponent>();
+	private static final Map<String, StoreComponent> byKey = new HashMap<String, StoreComponent>();
 	
 	static {
-		lookUp.put(METADATA.id, METADATA);
-		lookUp.put(SIZING.id, SIZING);
-		lookUp.put(BLOCK_OVERHEAD.id, BLOCK_OVERHEAD);
-		lookUp.put(REPOSITORY_OVERHEAD.id, REPOSITORY_OVERHEAD);
-		lookUp.put(SLOT_OVERHEAD.id, SLOT_OVERHEAD);
-		lookUp.put(SANDPIT.id, SANDPIT);
-		lookUp.put(FREE_SLOT_LIST.id, FREE_SLOT_LIST);
-		lookUp.put(FREE_LIST_RUNTIME.id, FREE_LIST_RUNTIME);
-		lookUp.put(FREE_LIST_256.id, FREE_LIST_256);
-		lookUp.put(SINGLY_LINKED_LIST_HEAD.id, SINGLY_LINKED_LIST_HEAD);
-		lookUp.put(SINGLY_LINKED_LIST_SEGMENT.id, SINGLY_LINKED_LIST_SEGMENT);
+		for (StoreComponent component : values()) {
+			byId.put(component.id, component);
+			byKey.put(component.key, component);
+		}
 	}
 	
 	private StoreComponent(int id, String key) {
@@ -43,7 +37,11 @@ public enum StoreComponent {
 	}
 	
 	public static StoreComponent forId(int id) {
-		return lookUp.get(id);
+		return byId.get(id);
+	}
+	
+	public static StoreComponent forKey(String key) {
+		return byKey.get(key);
 	}
 	
 	@Override
