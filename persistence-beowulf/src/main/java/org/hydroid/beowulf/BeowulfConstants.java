@@ -7,7 +7,7 @@ public final class BeowulfConstants {
     public static final int MAGIC_NUMBER = 0xbeefbabe;
     
     public static final int MAJOR_VERSION = 0;
-    public static final int MINOR_VERSION = 2;
+    public static final int MINOR_VERSION = 3;
     public static final int BUILD_NUMBER = 1;
     
     public static final byte SLOT_USED 			= (byte)121;
