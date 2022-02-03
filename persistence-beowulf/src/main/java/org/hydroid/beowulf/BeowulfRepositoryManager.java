@@ -16,6 +16,7 @@ import org.hydroid.beowulf.manager.StorageManager;
 import org.hydroid.beowulf.manager.StorageManagerImpl;
 import org.hydroid.beowulf.overlay.BlockOverhead;
 import org.hydroid.beowulf.overlay.FreeSlotList;
+import org.hydroid.beowulf.overlay.MetaData;
 import org.hydroid.beowulf.overlay.OverlayFactory;
 import org.hydroid.beowulf.overlay.RepositoryOverhead;
 import org.hydroid.beowulf.overlay.RootBlock;
@@ -51,6 +52,7 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 	private final OverlayFactory reader;
 	private final OverlayFactory forge;
 	private final RootBlock rootBlock;
+	private final MetaData md;
 	private final Sizing sz;
 	private final RepositoryFile repoFile;
 	private final PageDaemon pageDaemon;
@@ -92,6 +94,7 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 		pageDaemon.pin(rootPage);
 		rootBlock = new RootBlock(rootPage.getByteBuffer(), reader, locatorFactory);
 		this.repositoryOverhead = rootBlock.getRepositoryOverhead();
+		md = rootBlock.getMetaData();
 		sz = rootBlock.getSizing();
 		blockSize = sz.getBlockSize();
 		
@@ -116,7 +119,7 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 			return hit;
 		}
 		
-		PageIdentifier id = new PageIdentifier(repoFile, blockId * blockSize, blockSize);
+		PageIdentifier id = PageIdentifier.forBlock(repoFile, blockId, blockSize);
 		Page blockPage = pageDaemon.pageIn(id);
 		StorageBlock block = new StorageBlock(blockPage.getByteBuffer(), reader, locatorFactory, sz);
 		FreeSlotList fsl = block.getFreeSlotList();
@@ -144,7 +147,7 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 	public StorageManager makeStorage() throws PhysicalResourceException {
 		long nextBlockId = runtime.nextBlockId();
 		logger.debug(String.format("makeStorage(blockId=%d)", nextBlockId));
-		PageIdentifier newPage = new PageIdentifier(repoFile, blockSize * nextBlockId, blockSize);
+		PageIdentifier newPage = PageIdentifier.forBlock(repoFile, nextBlockId, blockSize);
 		Page page1 = pageDaemon.make(newPage);
 		ByteBuffer b1 = page1.getByteBuffer();
 		
@@ -167,6 +170,7 @@ public class BeowulfRepositoryManager implements RepositoryManager {
 		return runtime.getBlockCount();
 	}
 	
+	public MetaData getMetaData() { return md; }
 	public Sizing getSizing() { return sz; }
 	public SandpitManager getSandpitManager() { return sandpitManager; }
 	public LocatorFactory getLocatorFactory() { return locatorFactory; }
