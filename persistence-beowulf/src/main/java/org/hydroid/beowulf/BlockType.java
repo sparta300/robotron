@@ -9,8 +9,8 @@ import java.util.Map;
 public enum BlockType
 {
 	ROOT_BLOCK((int) 0xbe, "root"), 
-	STORAGE_BLOCK(1, "store"),
-	WILDERNESS_BLOCK(2, "wild"),
+	STORAGE_BLOCK(1, "storage"),
+	WILDERNESS_BLOCK(2, "wilderness"),
 	;
 
 	private final int blockType;

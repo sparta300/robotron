@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 
 import javax.inject.Inject;
 
+import org.hydroid.beowulf.overlay.BlockOverhead;
 import org.hydroid.beowulf.overlay.MetaData;
 import org.hydroid.beowulf.overlay.OverlayFactory;
 import org.hydroid.beowulf.overlay.RootBlock;
@@ -65,24 +66,29 @@ public class StoreReader {
 		log.debug("block size " + blockSize);
 		log.debug("slot size " + slotSize);
 
-		PageIdentifier page0 = PageIdentifier.forRootBlock(repoFile, blockSize);
+		PageIdentifier id0 = PageIdentifier.forRootBlock(repoFile, blockSize);
 		OverlayFactory overlayFactory  = new OverlayFactory(false, locatorFactory);
 
-		Page page = null;
+		Page page0 = null;
 
 		try {
-			page = daemon.pageIn(page0);
-			ByteBuffer bb = page.getByteBuffer();
+			page0 = daemon.pageIn(id0);
+			ByteBuffer bb = page0.getByteBuffer();
 
+			log.debug("reporting on root block ...");
 			RootBlock root = new RootBlock(bb, overlayFactory, locatorFactory);
 			root.report();
 			
-			long nextBlockId = root.getRepositoryOverhead().getNextBlockId() - 1L;
+			long nextBlockId = root.getRepositoryOverhead().getNextBlockId() /* FIXME - 1L*/ + 1;
 			log.debug("next block ID " + nextBlockId);
 			
 			for (long block = 1; block < nextBlockId; block++) {
-				PageIdentifier blockPageId = page0.forBlock(block);
-				daemon.fetch(blockPageId);
+				PageIdentifier blockPageId = id0.forBlock(block);
+				Page page = daemon.fetch(blockPageId);
+				ByteBuffer buffer = page.getByteBuffer();
+				buffer.rewind();
+				BlockOverhead bo = new BlockOverhead(buffer, locatorFactory);
+				log.debug(bo.toString());
 			}
 		} catch (PageException e) {
 			log.error("page exception on page-in", e);

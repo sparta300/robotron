@@ -9,8 +9,6 @@ import org.hydroid.file.PhysicalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 public class NewSpaceHandler implements RequestHandler {
 	public NewSpaceHandler(SpaceManager spaceManager, int incrementMinimumBlocks, StorageListener scavenger) {
 		spaceman = spaceManager;

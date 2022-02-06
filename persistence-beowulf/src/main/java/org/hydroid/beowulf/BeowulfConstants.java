@@ -1,5 +1,7 @@
 package org.hydroid.beowulf;
 
+import com.mfdev.utility.SafeCast;
+
 public final class BeowulfConstants {
     /**
      * used at the beginning of the repository file to identify it as a repository
@@ -10,13 +12,13 @@ public final class BeowulfConstants {
     public static final int MINOR_VERSION = 3;
     public static final int BUILD_NUMBER = 1;
     
-    public static final byte SLOT_USED 			= (byte)121;
+    public static final byte SLOT_USED 			= SafeCast.fromIntToUnsignedByte(121);
     public static final int NO_FREE_SLOT 		= -120;
     
     public static final long UNSET_LOCATOR          = -10L;
     public static final int UNSET_SIZE 			    = -11;
-    public static final int UNSET_COUNT 		    = -12;
-    public static final long UNSET_OBJECT_TYPE 	    = -13;
+    public static final int UNSET_COUNT 		        = -12;
+    public static final long UNSET_OBJECT_TYPE 	    = -13L;
     public static final int UNSET_SLOT_INDEX 	    = -14;
     public static final int UNSET_POINTER           = -15;
     public static final int UNSET_BLOCK_ID          = -16;

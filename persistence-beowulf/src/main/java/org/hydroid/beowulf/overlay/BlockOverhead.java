@@ -2,7 +2,6 @@ package org.hydroid.beowulf.overlay;
 
 import static org.hydroid.beowulf.BeowulfConstants.BYTE_DEFAULT_VALUE;
 import static org.hydroid.beowulf.BeowulfConstants.UNSET_BLOCK_ID;
-import static org.hydroid.beowulf.BlockType.STORAGE_BLOCK;
 
 import java.nio.ByteBuffer;
 
@@ -28,7 +27,6 @@ public class BlockOverhead extends AbstractOverlay
 	private final UnsignedBytePointer total;
 	private final UnsignedBytePointer used;
 	private final UnsignedBytePointer free;
-
 	
 	public BlockOverhead(ByteBuffer bb, LocatorFactory locatorFactory)
 	{
@@ -71,7 +69,7 @@ public class BlockOverhead extends AbstractOverlay
 	{
 		ByteBuffer buffer = getByteBuffer();
 		start();
-		buffer.put(SafeCast.fromIntToUnsignedByte(STORAGE_BLOCK.blockType()));
+		buffer.put(BYTE_DEFAULT_VALUE);
 		buffer.putLong(UNSET_BLOCK_ID);
 		
 		// Design decision DD-001/2020
@@ -93,7 +91,7 @@ public class BlockOverhead extends AbstractOverlay
 
 	public void setBlockTypePointer(int value)
 	{
-		blockTypePointer.set(value);
+		blockTypePointer.set(SafeCast.fromIntToUnsignedByte(value));
 	}
 
 	public void setBlockId(long value)
