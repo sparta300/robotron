@@ -8,7 +8,7 @@ import org.hydroid.beowulf.storage.LocatorFactory;
 
 public class RootBlock extends CompositeOverlay implements RootOverlay {
 	public RootBlock(ByteBuffer bb, OverlayFactory factory, LocatorFactory locatorFactory) {
-		super(bb, overlayTypes, factory, locatorFactory);
+		super(bb, componentKeys, factory, locatorFactory);
 		md = getComponent("md");
 		sz = getComponent("sz");
 		ro = getComponent("ro");
@@ -66,5 +66,5 @@ public class RootBlock extends CompositeOverlay implements RootOverlay {
 	
 	private SlotOverhead[] slotOverheads;
 	
-	private static final List<String> overlayTypes = Arrays.asList("md", "sz", "ro", "sp", "bo");
+	private static final List<String> componentKeys = Arrays.asList("md", "sz", "ro", "sp", "bo");
 }

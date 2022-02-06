@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hydroid.beowulf.SlotCountCalculator;
 import org.hydroid.beowulf.overlay.BlockOverhead;
 import org.hydroid.beowulf.overlay.CompositeOverlay;
 import org.hydroid.beowulf.overlay.FreeSlotList;
@@ -17,7 +16,8 @@ import org.hydroid.beowulf.overlay.Sizing;
 import org.hydroid.beowulf.overlay.SlotOverhead;
 import org.hydroid.beowulf.storage.LocatorFactory;
 
-import com.lbg.persist.SafeCast;
+import com.mfdev.utility.SafeCast;
+
 
 /**
  * 

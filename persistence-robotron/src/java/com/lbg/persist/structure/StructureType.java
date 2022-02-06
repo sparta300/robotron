@@ -30,7 +30,7 @@ public enum StructureType
 	// telemetry
 	TELEMETRY_STREAM          (90),
 	TELEMETRY_FRAME           (91),
-	FRAME_MAIN         (92),	
+	FRAME_MAIN                (92),	
 	LIST_TELEMETRY_FRAME      (93),	
 	TIME_CODE                 (94),
 	FRAME_SEGMENT             (95),
