@@ -1,20 +1,6 @@
-/**
- * File		: $Source:$
- * Author	: $Author:$
- * Revision	: $Revision:$
- * Date 	: $Date:$
- */
 package org.hydroid.beowulf.storage.general;
 
-/**
- * @author smiley
- */
 public class AddObjectRequest  {
-	/**
-	 * @param transactionId
-	 * @param eventCode
-	 * @param byteBuffer
-	 */
 	public AddObjectRequest(int transactionId, byte[] bytes, boolean requiresResponse) {
 		this.tx = transactionId;
 		this.bytes = bytes;
