@@ -40,7 +40,7 @@ public class LocationManager implements LocationManagerApi {
 		FilenameFilter filter = new FileSuffixFilter(Arrays.asList(suffix));	
 		List<File> files = location.listChildFiles(filter);
 		
-		// eargerly add a holder for each store
+		// eagerly add a holder for each store
 		for (File file : files) {
 			String fileName = file.getName();
 			String storeName = fileName.substring(0, fileName.indexOf(suffix)); 
