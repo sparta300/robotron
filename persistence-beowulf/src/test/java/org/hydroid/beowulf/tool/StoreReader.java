@@ -79,10 +79,12 @@ public class StoreReader {
 			RootBlock root = new RootBlock(bb, overlayFactory, locatorFactory);
 			root.report();
 			
-			long nextBlockId = root.getRepositoryOverhead().getNextBlockId() /* FIXME - 1L*/ + 1;
-			log.debug("next block ID " + nextBlockId);
+			long idForNewBlock = root.getRepositoryOverhead().getNextBlockId();
+			log.debug("ID for a new block would be " + idForNewBlock);
+			long lastBlock = idForNewBlock - 1L;
+			log.debug("last block is" + lastBlock);
 			
-			for (long block = 1; block < nextBlockId; block++) {
+			for (long block = 1; block <= lastBlock; block++) {
 				PageIdentifier blockPageId = id0.forBlock(block);
 				Page page = daemon.fetch(blockPageId);
 				ByteBuffer buffer = page.getByteBuffer();
