@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/common-file"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/common-calendar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/persist-page-daemon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

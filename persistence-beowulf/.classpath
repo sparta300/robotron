@@ -9,5 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/persistence-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ui-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/persist-page-daemon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

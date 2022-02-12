@@ -6,7 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/common-file"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/page-cache"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/common-util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/persist-page-daemon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
